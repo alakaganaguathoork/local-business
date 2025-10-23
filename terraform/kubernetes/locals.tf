@@ -1,4 +1,6 @@
 locals {
+  env = "test"
+  region = "us-east-1"
   cluster_name = "sanbox"
 
   helm_releases = {
