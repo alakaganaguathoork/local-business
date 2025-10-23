@@ -1,4 +1,4 @@
-data "http" "argocd_values" {
+data "http" "custom_values" {
   url             = var.release.values_file_url
   request_headers = { Accept = "text/yaml" }
 }
@@ -13,7 +13,7 @@ resource "helm_release" "this" {
   atomic           = try(var.release.atomic, true)
   force_update     = try(var.release.force_update, true)
   version          = try(var.release.version, null)
-  values           = [data.http.argocd_values[each.key].response_body]
+  values           = [data.http.custom_values.response_body]
 }
 
 output "helm_release" {
