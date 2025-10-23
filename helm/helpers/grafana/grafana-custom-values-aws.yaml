@@ -1,0 +1,14 @@
+adminPassword: admin
+
+ingress:
+  enabled: true
+  ingressClassName: alb
+  path: /
+  extraPaths:
+    - path: /
+      pathType: Prefix
+      backend:
+        service:
+          name: grafana
+          port:
+            number: 80
