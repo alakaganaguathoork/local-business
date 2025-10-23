@@ -29,7 +29,7 @@ server:
               pathType: Prefix
               backend:
                 service:
-                  name: prmetheus-server
+                  name: prometheus-server
                   port:
                     number: 80
     # extraRules: [] 
