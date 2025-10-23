@@ -17,5 +17,5 @@ resource "helm_release" "this" {
   version          = try(var.release.version, null)
   values           = [data.http.custom_values.response_body]
 
-  timeout = 400
+  timeout = 1000
 }
