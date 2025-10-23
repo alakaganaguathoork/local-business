@@ -4,26 +4,53 @@ server:
   ingress:
     enabled: true
     ingressClassName: alb
-    path: /
-    extraRules:
-      - http:
-          paths:
-            - path: /
-              pathType: Prefix
-              backend:
-                service:
-                  name: prometheus-server
-                  port:
-                    number: 80
+    annotations:
+      kubernetes.io/ingress.class: alb
+      alb.ingress.kubernetes.io/load-balancer-name: shared-alb
+      alb.ingress.kubernetes.io/group.name: shared-alb
+      alb.ingress.kubernetes.io/group.order: "10"          # (rule priority among group)
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+      alb.ingress.kubernetes.io/healthcheck-path: /-/healthy
 
-  # persistentVolume:
-    # enabled: true
-    # size: 8Gi
-    # storageClass: gp3               # EKS
+        # For HTTPS
+      # alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+      # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:REGION:ACCT:certificate/UUID
+      # alb.ingress.kubernetes.io/ssl-redirect: "443"
+    hosts: []
+    path: /
+    pathType: Prefix
+    extraRules: [] 
   
+    # EKS: keep persistence on gp3 (or your default SC)
+  persistentVolume:
+    enabled: true
+    size: 8Gi
+    storageClass: gp3               # EKS
+  
+    # Make /data writable for Prometheus (non-root UID 65534)
+  podSecurityContext:
+    runAsUser: 65534
+    runAsGroup: 65534
+    fsGroup: 65534
+    fsGroupChangePolicy: OnRootMismatch
+
   securityContext:
     runAsNonRoot: true
     allowPrivilegeEscalation: false
+
+    # Some drivers ignore fsGroup; ensure ownership once at startup
+  extraInitContainers:
+    - name: fix-perms
+      image: busybox:1.36
+      command: ["sh","-c","chown -R 65534:65534 /data || true; chmod -R g+rwX /data || true"]
+      securityContext:
+        runAsUser: 0
+        runAsGroup: 0
+      volumeMounts:
+        - name: storage-volume
+          mountPath: /data
   
 serverFiles:
   alerting_rules.yml:

@@ -3,8 +3,27 @@ adminPassword: admin
 ingress:
   enabled: true
   ingressClassName: alb
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/load-balancer-name: shared-alb
+    alb.ingress.kubernetes.io/group.name: shared-alb
+    alb.ingress.kubernetes.io/group.order: "20"
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /api/health
+    # Optional: restrict who can reach it
+    # alb.ingress.kubernetes.io/inbound-cidrs: 1.2.3.4/32
+    
+    # For HTTPS
+    # alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+    # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:REGION:ACCT:certificate/UUID
+    # alb.ingress.kubernetes.io/ssl-redirect: "443"
+  hosts: []
   path: /
   pathType: Prefix
+  extraPaths: []
+
   # extraPaths:
     # - path: /
       # pathType: Prefix
