@@ -38,7 +38,7 @@ resource "aws_subnet" "subnet" {
   tags = {
     "kubernetes.io/role/elb"                    = "1"
     "kubernetes.io/cluster/${local.cluster.name}" = "owned"
-    "Name" = "public-subnet-${loca.cluster.name}"
+    "Name" = "public-subnet-${local.cluster.name}"
   }
 }
 
