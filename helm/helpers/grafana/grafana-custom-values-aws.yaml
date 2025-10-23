@@ -4,11 +4,12 @@ ingress:
   enabled: true
   ingressClassName: alb
   path: /
-  extraPaths:
-    - path: /
-      pathType: Prefix
-      backend:
-        service:
-          name: grafana
-          port:
-            number: 80
+  pathType: Prefix
+  # extraPaths:
+    # - path: /
+      # pathType: Prefix
+      # backend:
+        # service:
+          # name: grafana
+          # port:
+            # number: 80
