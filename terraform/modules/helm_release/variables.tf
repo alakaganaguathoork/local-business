@@ -1,4 +1,4 @@
-variable "helm_release" {
+variable "release" {
   type = object({
     values_file_url = string
     name            = string

@@ -19,7 +19,7 @@ module "helm_releases" {
 
   source = "../modules/helm_release"
 
-  helm_release = each.value
+  release = each.value
 
   depends_on = [module.ingress]
 }
