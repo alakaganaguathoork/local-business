@@ -22,7 +22,7 @@ locals {
       values_file_url = "https://raw.githubusercontent.com/alakaganaguathoork/local-business-open-api-project/refs/heads/main/kubernetes/helm/helpers/grafana/grafana-custom-values-aws.yaml"
       name            = "grafana"
       namespace       = "monitoring"
-      repositoty      = "https://grafana.github.io/helm-charts"
+      repository      = "https://grafana.github.io/helm-charts"
       chart           = "grafana/grafana"
     }
   }
