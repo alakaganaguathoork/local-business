@@ -12,7 +12,7 @@ locals {
       chart           = "argo-cd"
     }
     prometheus = {
-      values_file_url = "https://raw.githubusercontent.com/alakaganaguathoork/local-business/refs/heads/main/helm/helpers/prometheus/prometheus-custom-values-aws.yaml"
+      values_file_url = "https://raw.githubusercontent.com/alakaganaguathoork/local-business/refs/heads/main/helm/helpers/prometheus/prom-custom-values-aws.yaml"
       name            = "prometheus"
       namespace       = "monitoring"
       repository      = "https://prometheus-community.github.io/helm-charts"
