@@ -1,0 +1,41 @@
+###
+## Provide a valid action and list a command to install (e.g., aws, az, kubectl).
+## The template would match a provided command's name to script's file name in /scripts/env/ directory. 
+###
+
+parameters:
+  - name: action
+    type: string
+    values:
+      - Install
+      - Uninstall
+  - name: dependsOn
+    type: object
+    default: []
+  - name: utilities
+    type: object
+    default: []
+
+jobs:
+
+  - ${{ if eq(length(parameters.utilities), 0 )}}:
+    - ${{ error(format('Nothing to {0}', lower(parameters.action))) }}
+  
+  - job: ${{ format('{0}Utilities', parameters.action) }}
+    displayName: ${{ format('{0} required utilities', parameters.action) }}
+    dependsOn: ${{ parameters.dependsOn }}
+    variables:
+      scriptsFolder: $(System.DefaultWorkingDirectory)/azure-pipelines/scripts
+      action: ${{ lower(parameters.action) }}
+    continueOnError: true
+    steps:
+      - checkout: self
+
+      - ${{ each item in parameters.utilities }}:
+        - task: Bash@3
+          name: ${{ format('{0}_{1}', variables.action, item.name) }}
+          displayName: ${{ format('{0} {1}', variables.action, item.name) }}
+          inputs:
+            targetType: filePath
+            filePath: ${{ format('{0}/env/{1}.sh', variables.scriptsFolder, lower(item.name)) }}
+            arguments: --action ${{ variables.action }}

@@ -1,0 +1,72 @@
+name: 'dockerBuild-$(Date:yyyy-MM-dd)$(Rev:.r)'
+
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - app/*
+      - azure-pipelines/build-dockerfile.yml
+      - Dockerfile
+      - docker-compose.yml
+
+variables:
+  image_name: "alakaganaguathoork/local-business"
+  image_tag: "latest"
+  docker_hub_repo: "alakaganaguathoork/local-business" 
+
+pool:
+  name: "Local"
+
+resources:
+  containers:
+  - container: dockerhub
+    type: DockerRegistry
+    image: $(image_tag)
+    connection: docker-hub-connector
+
+stages:
+  - stage: BuildImage
+    displayName: Build an image
+    jobs:
+      - job: build
+        steps:
+          ###
+          ## This repo is no longer private, so this step is not required
+          ###
+          # - task: Docker@2
+            # name: DockerLogin
+            # displayName: "Login to Docker Hub"
+            # inputs:
+              # command: login
+              # containerRegistry: docker-hub-connector
+              # repository: $(docker_hub_repo)
+          
+          - task: Docker@2
+            name: DockerBuildImage
+            displayName: "Build Docker image"
+            inputs:
+              # buildContext: app/
+              command: build
+              containerRegistry: docker-hub-connector
+              repository: $(docker_hub_repo)
+              dockerfile: ./Dockerfile
+              tags: "$(image_tag)"
+          
+          
+              
+  - stage: PushImage
+    dependsOn: BuildImage
+    displayName: Push an image
+    jobs:
+      - job: push
+        steps:
+          - task: Docker@2
+            name: DockerPushImage
+            displayName: "Push Docker image to Docker Hub"
+            inputs:
+              command: push
+              containerRegistry: docker-hub-connector
+              repository: $(docker_hub_repo)
+              tags: "$(image_tag)"

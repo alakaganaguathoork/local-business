@@ -1,0 +1,85 @@
+name: $(Date:yyyy-MM-dd)$(Rev:.r)-$(Build.SourceBranchName)
+
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      # - azure-pipelines/eks.yml
+      # - azure-pipelines/templates/*
+
+resources:
+  webhooks:
+    - webhook: TerraformApplied
+      connection: TerraformAppliedServiceConnection
+
+pool:
+  name: 'Local'
+
+variables:
+  - group: AWS
+  - group: CLUSTER_INFRA
+
+  - name: projectRoot
+    value: $(System.DefaultWorkingDirectory)
+  - name: awsCredentials
+    value: aws-oidc-federation
+  - name: environment
+    value: eks-$(Build.SourceBranchName)
+  - name: awsCredentials
+    value: aws-oidc-federation
+  - name: awsRegion
+    value: us-east-1 
+  - name: awsClusterName
+    value: sandbox
+  - name: k8sVersion
+    value: 1.33.0
+
+stages:
+  - stage: Deploy
+    displayName: Deploy resources to the '${{ variables.clusterName }}' EKS cluster
+    jobs:
+      - template: ./templates/setup-env.yml
+        parameters:
+          action: Install
+          utilities: 
+            - name: aws
+            - name: kubectl
+            - name: helm
+      
+      - template: ./templates/aws/jobs/configure.yml
+        parameters:
+          dependsOn: installUtilities
+
+      # - template: ./templates/kubernetes/jobs/deploy-to-cluster.yml
+        # parameters:
+          # deploymentName: Deploy
+          # dependsOn: Configure
+          # environment: $(environment)
+          # awsCredentials: $(awsCredentials)
+          # awsRegion: $(awsRegion)
+          # awsClusterName: $(awsClusterName)
+
+          # manifests:
+            # - name: namespace
+              # manifest: $(System.DefaultWorkingDirectory)/terraform/aws/projects/eks-deployments/yamls/namespace.yml
+            # - name: deployment
+              # manifest: $(System.DefaultWorkingDirectory)/terraform/aws/projects/eks-deployments/yamls/deployments/nginx/deployment.yml
+            # - name: service
+              # manifest: $(System.DefaultWorkingDirectory)/azure-pipelines/service.yml 
+
+      - template: ./templates/kubernetes/helm/argocd.yml
+        parameters:
+          deploymentName: Argocd
+          dependsOn: Deploy
+          environment: $(environment)
+          awsClusterName: $(awsClusterName)
+          
+      - template: ./templates/setup-env.yml
+        parameters:
+          action: Uninstall
+          dependsOn: Deploy
+          utilities:
+            - name: aws
+            - name: kubectl

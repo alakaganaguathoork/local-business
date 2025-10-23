@@ -1,0 +1,39 @@
+###
+## Helper task to personalize aws cli.
+## For now, it only applies long-lived credentials taken from Azure Devops Library's "AWS" set.
+###
+
+parameters:
+  - name: dependsOn 
+    type: object
+    default: []
+  - name: awsRegion
+    type: string
+    default: us-east-1
+
+jobs:
+  - job: Configure
+    displayName: Configure AWS (login)
+    dependsOn: ${{ parameters.dependsOn }}
+    steps:
+      - checkout: none
+
+      - task: Bash@3
+        name: configure
+        displayName: aws configure
+        inputs:
+          targetType: inline
+          script: |
+            aws configure set aws_access_key_id $(AWS_ACCESS_KEY_ID) --profile default; \
+            aws configure set aws_secret_access_key $(AWS_SECRET_ACCESS_KEY) --profile default; \
+            aws configure set default.region ${{ parameters.awsRegion }}
+      
+      - task: Bash@3
+        name: verify
+        displayName: aws sts get-caller-identity
+        inputs:
+          targetType: inline
+          script: |
+            aws sts get-caller-identity
+    workspace:
+      clean: all

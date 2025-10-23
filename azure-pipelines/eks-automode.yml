@@ -1,0 +1,95 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/microsoft/azure-pipelines-vscode/master/service-schema.json
+
+name: $(Date:yyyy-MM-dd)$(Rev:.r)-$(Build.SourceBranchName)
+
+trigger:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - azure-pipelines/eks-automode.yml
+      - azure-pipelines/templates/*
+
+resources:
+  webhooks:
+    - webhook: TerraformApplied
+      connection: TerraformAppliedServiceConnection
+
+pool:
+  name: 'Local'
+
+variables:
+  - group: AWS
+  - group: CLUSTER_INFRA
+
+  - name: projectRoot
+    value: $(System.DefaultWorkingDirectory)
+  - name: awsCredentials
+    value: aws-oidc-federation
+  - name: environment
+    value: eks-$(Build.SourceBranchName)
+  - name: awsCredentials
+    value: aws-oidc-federation
+  - name: awsRegion
+    value: us-east-1 
+  - name: awsClusterName
+    value: sandbox
+  - name: k8sVersion
+    value: 1.34.0
+
+stages:
+  - stage: Deploy
+    displayName: Deploy resources to the '${{ variables.clusterName }}' EKS cluster
+    jobs:
+      - template: ./templates/setup-env.yml
+      # Install all needed tools for this pipeline
+        parameters:
+          action: Install
+          utilities: 
+            - name: aws
+            - name: kubectl
+            - name: helm
+      
+      - template: ./templates/aws/jobs/configure.yml
+      # Set up AWS long-lived creds
+        parameters:
+          dependsOn: installUtilities
+          
+      - template: ./templates/helm/jobs/argocd.yml
+      # Install ArgoCD in a cluster using Helm
+        parameters:
+          deploymentName: Argocd
+          dependsOn: Configure
+          environment: $(environment)
+          awsRegion: $(awsRegion)
+          awsClusterName: $(awsClusterName)
+      
+      - template: ./templates/helm/jobs/prometheus.yml
+      # Install monitoring in a cluster using Helm
+        parameters:
+          deploymentName: Monitoring
+          dependsOn: Argocd
+          environment: $(environment)
+          awsRegion: $(awsRegion)
+          awsClusterName: $(awsClusterName)
+
+      - template: ./templates/kubernetes/jobs/deploy-to-cluster.yml
+      # Install Local Business app in a cluster using Helm
+        parameters:
+          deploymentName: Deploy
+          dependsOn: ArgoCD
+          environment: $(environment)
+          awsCredentials: $(awsCredentials)
+          awsRegion: $(awsRegion)
+          awsClusterName: $(awsClusterName)
+          
+      - template: ./templates/setup-env.yml
+      # Clean agent's environemnt
+        parameters:
+          action: Uninstall
+          dependsOn: Deploy
+          utilities:
+            - name: aws
+            - name: kubectl
+            - name: helm

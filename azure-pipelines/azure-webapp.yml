@@ -1,0 +1,87 @@
+name: 'app-$(Date:yyyy-MM-dd)$(Rev:.r)'
+
+trigger:
+  branches:
+    include:
+      - azure-pipeline
+  paths:
+    include:
+      - app/*
+      - azure-pipelines/azure-webapp.yml
+
+variables:
+  # azureServiceConnectorId: "7a9cf0e8-68d1-4cdc-82c7-d96cca6b8858"
+  azureServiceConnectorId: azure-connector
+  resourceGroupName: "resource-group-test"
+  projectRoot: $(System.DefaultWorkingDirectory)
+  pythonVersion: "3.12"
+
+parameters:
+  - name: apps
+    type: object
+    default:
+      - name: "app-1-SoFGTcl"
+        type: "webAppLinux"
+      - name: "app-3-aV3fiAg"
+        type: "webAppLinux"
+      - name: "app-2-6LVOr7A"
+        type: "webApp"
+
+pool:
+  name: Local
+
+stages:
+  - stage: Build
+    variables:
+    - group: Main
+    jobs:
+    - job: CreateEnvFile
+      steps:
+      - bash: |
+          touch .env
+        name: CreateEnvFile
+        displayName: "Create .env file"
+        workingDirectory: $(projectRoot)/app
+      
+      - bash: |
+          echo "APP_ENV=$(APP_ENV)" >> ./.env
+          echo "X_RAPIDAPI_KEY=$(X_RAPIDAPI_KEY)" >> ./.env
+        name: SaveEnvVaribalesInFile
+        displayName: "Save env varibales in .env"
+        workingDirectory: $(projectRoot)/app
+      
+      - bash: |
+          python -m venv antenv
+          source antenv/bin/activate
+          pip install --no-cache-dir -r requirements.txt
+        name: InstallDependencies
+        displayName: "Install Python dependencies"
+        workingDirectory: $(projectRoot)/app
+      
+      - task: ArchiveFiles@2
+        name: ZipFiles
+        displayName: "Archive Python App"
+        inputs:
+          rootFolderOrFile: 'app'
+          includeRootFolder: false
+          archiveType: 'zip'
+          archiveFile: '$(Build.ArtifactStagingDirectory)/app.zip'
+          replaceExistingArchive: true
+      
+      - ${{ each app in parameters.apps }}:
+      - task: AzureWebApp@1
+        name: AzureWebApp
+        displayName: "Deploy to Azure App Service"
+        inputs:
+          azureSubscription: "$(azureServiceConnectorId)"
+          appName: ${{ app.name }}
+          appType: ${{ app.type }}
+          resourceGroupName: "$(resourceGroupName)"
+          package: "$(Build.ArtifactStagingDirectory)/app.zip"
+          runtimeStack: "PYTHON|3.13"
+          startUpCommand: "python app.py"
+        env:
+          SCM_DO_BUILD_DURING_DEPLOYMENT: true
+          APP_ENV: $(APP_ENV)
+          X_RAPIDAPI_KEY: $(X_RAPIDAPI_KEY)
+

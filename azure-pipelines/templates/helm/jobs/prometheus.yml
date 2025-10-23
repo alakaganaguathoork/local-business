@@ -1,0 +1,55 @@
+parameters:
+  - name: deploymentName
+    type: string
+  - name: dependsOn
+    type: object
+    default: []
+  - name: environment
+    type: string
+  - name: awsRegion
+    type: string
+  - name: awsClusterName
+    type: string
+
+jobs:
+  - deployment: ${{ parameters.deploymentName }}
+    displayName: ${{ parameters.deploymentName }}
+    dependsOn: ${{ parameters.dependsOn }}
+    environment: ${{ parameters.environment }}
+    variables:
+      namespace: monitoring
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - checkout: self
+
+            - task: Bash@3
+              name: update_config
+              displayName: aws eks update-kubeconfig
+              condition: succeeded()
+              inputs:
+                targetType: inline
+                script: |
+                  aws eks update-kubeconfig \
+                    --region ${{ parameters.awsRegion }} \
+                    --name ${{ parameters.awsClusterName }}
+
+            - task: Bash@3
+              name: deploy_prometheus
+              displayName: deploy prometheus
+              condition: succeeded()
+              inputs:
+                targetType: inline
+                script: |
+                  helm uninstall prometheus -n $(namespace) || true
+                  kubectl delete namespace $(namespace) --ignore-not-found
+
+                  helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+                  helm repo update
+                  helm upgrade \
+                    --install prometheus prometheus-community/prometheus \
+                    --namespace $(namespace) \
+                    --create-namespace \
+                    --reuse-values \
+                    --values $(System.DefaultWorkingDirectory)/kubernetes/helm/helpers/prometheus/prom-custom-values-aws.yaml

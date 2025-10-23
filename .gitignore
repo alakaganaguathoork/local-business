@@ -1,0 +1,51 @@
+# root files
+.env
+.vscode/
+.vscode/**
+.docker/
+.docker/**
+*.zip
+
+# app/ directories
+app/**/__pycache__/
+app/logs/
+app/**/.venv*/
+app/.env
+
+# kubernetes files
+kubernetes/**/.*
+!kubernetes/helm/**/.helmignore
+
+
+# terraform/ directories
+terraform/**/.terraform/
+
+# terraform/ files
+terraform/**/.terraform*
+terraform/**/terraform.tfstate*
+terraform/**/*.plan
+terraform/**/*.tfvars
+terraform/**/*.auto.tfvars
+terraform/**/*.lock.hcl
+terraform/**/*tfplan*
+terraform/**/*.output
+!terraform/**/.terraformignore
+
+# vagrant
+vagrant/.vagrant/
+vagrant/**/.vagrant/
+vagrant/shared/
+vagrant/**/shared/
+vagrant/*-console.log
+vagrant/**/*-console.log
+
+# monitoring
+monitoring/**/.env
+monitoring/**/generated/
+
+# libvirt
+libvirt/iso/
+libvirt/disks/
+
+#vpn
+vpn/**/generated-certs/

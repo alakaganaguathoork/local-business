@@ -1,0 +1,94 @@
+parameters:
+  - name: deploymentName
+    type: string
+  - name: dependsOn
+    type: object
+    default: []
+  - name: environment
+    type: string
+  - name: awsCredentials
+    type: string
+  - name: awsRegion
+    type: string
+    default: us-east-1
+  - name: awsClusterName
+    type: string
+  - name: manifests
+    type: object
+    default: []
+
+jobs:
+  - deployment: ${{ parameters.deploymentName }}
+    displayName: ${{ parameters.deploymentName }}
+    dependsOn: ${{ parameters.dependsOn }}
+    environment: ${{ parameters.environment }}
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - checkout: self
+
+            - task: Bash@3
+              name: update_config
+              displayName: aws eks update-kubeconfig
+              condition: succeeded()
+              inputs:
+                targetType: inline
+                script: |
+                  aws eks update-kubeconfig \
+                    --region ${{ parameters.awsRegion }} \
+                    --name ${{ parameters.awsClusterName }}
+                  
+            - task: Bash@3
+              name: copy_sg_ids
+              displayName: copy security groups ids
+              condition: succeeded()
+              inputs:
+                targetType: inline
+                script: |
+                  # cd terraform/aws/projects/eks-automode
+                  pwd
+                  touch .sg-ids.output
+                  echo "^ file created"
+                  ls -lh
+                  VPC_ID=$(aws eks describe-cluster --name "${{ parameters.awsClusterName }}" --query 'cluster.resourcesVpcConfig.vpcId' --output text)
+                  aws ec2 describe-security-groups --filters Name=vpc-id,Values=$VPC_ID --query 'SecurityGroups[*].GroupId' > .sg-ids.output
+                  echo "VPC ID=$VPC_ID"
+
+                  mv .sg-ids.output $(System.DefaultWorkingDirectory)/kubernetes/helm/charts/local-business/
+
+            # - ${{ if gt(length(parameters.manifests), 0) }}:
+              # - ${{ each item in parameters.manifests }}:
+                # - task: Bash@3
+                  # name: ${{ format('apply_{0}', item.name) }}
+                  # displayName: apply ${{ item.name }} in ${{ parameters.awsClusterName }} cluster 
+                  # inputs:
+                    # targetType: inline
+                    # script: |
+                      # kubectl apply -f ${{ item.manifest }}
+            
+            - task: Bash@3
+              name: app_helm_chart 
+              displayName: app helm chart
+              condition: succeeded()
+              inputs:
+                targetType: inline
+                script: |
+                  helm uninstall local-business -n app || true
+                  kubectl delete namespace app --ignore-not-found
+
+                  # helm upgrade --install local-business kubernetes/helm/local-business --values kubernetes/helm/local-business/values.yaml
+                  kubectl apply -n argocd -f $(System.DefaultWorkingDirectory)/kubernetes/helm/application-aws.yaml
+                  rm kubernetes/helm/charts/local-business/.sg-ids.output
+                
+            - task: Bash@3
+              name: endpoint
+              displayName: get endpoints in ${{ parameters.awsClusterName }} cluster 
+              inputs:
+                targetType: inline
+                script: |
+                  sleep 5
+                  kubectl get svc -A --field-selector spec.type=LoadBalancer \
+                    -o custom-columns="NAMESPACE:.metadata.namespace,NAME:.metadata.name,ENDPOINT:.status.loadBalancer.ingress[*].ip,HOSTNAME:.status.loadBalancer.ingress[*].hostname"
+    workspace:
+      clean: all
