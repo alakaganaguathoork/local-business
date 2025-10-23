@@ -6,7 +6,7 @@ server:
     ingressClassName: alb
     annotations:
       kubernetes.io/ingress.class: alb
-      alb.ingress.kubernetes.io/load-balancer-name: shared-alb
+      alb.ingress.kubernetes.io/load-balancer-name: prom-alb
       alb.ingress.kubernetes.io/group.name: shared-alb
       alb.ingress.kubernetes.io/group.order: "10"          # (rule priority among group)
       alb.ingress.kubernetes.io/scheme: internet-facing
