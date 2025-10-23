@@ -3,5 +3,5 @@ output "ingress" {
 }
 
 output "helm_releases" {
-  value = module.helm_releases.release
+  value = module.helm_releases
 }
