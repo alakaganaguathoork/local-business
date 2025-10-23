@@ -14,4 +14,6 @@ resource "helm_release" "this" {
   force_update     = try(var.release.force_update, true)
   version          = try(var.release.version, null)
   values           = [data.http.custom_values.response_body]
+
+  timeout = 400
 }

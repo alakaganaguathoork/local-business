@@ -3,6 +3,15 @@
 ###
 
 data "aws_subnets" "public" {
+  filter {
+    name = "tag:\"kubernetes.io/cluster/${local.cluster_name}\""
+    values = [ "owned" ]
+  }
+
+  filter {
+    name = "tag:Name"
+    values = [ "public-subnet-${loca.cluster_name}" ]
+  }
 }
 
 module "ingress" {
