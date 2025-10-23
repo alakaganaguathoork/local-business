@@ -15,7 +15,3 @@ resource "helm_release" "this" {
   version          = try(var.release.version, null)
   values           = [data.http.custom_values.response_body]
 }
-
-output "helm_release" {
-  value = helm_release.this
-}
