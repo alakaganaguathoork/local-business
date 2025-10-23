@@ -1,7 +1,7 @@
 locals {
   env = "test"
   region = "us-east-1"
-  cluster_name = "sanbox"
+  cluster_name = "sandbox"
 
   helm_releases = {
     argocd = {
