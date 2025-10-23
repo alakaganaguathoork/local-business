@@ -33,6 +33,7 @@ provider "aws" {
     }
   }
 }
+
 data "aws_eks_cluster" "main" {
   name = local.cluster_name
 }
