@@ -8,7 +8,7 @@ data "aws_subnets" "public" {
 module "ingress" {
   source = "../modules/ingress"
 
-  subnet_ids = data.aws_subnet.public.ids
+  subnet_ids = data.aws_subnets.public.ids
 }
 
 ###
