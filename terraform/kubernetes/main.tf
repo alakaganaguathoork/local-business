@@ -9,8 +9,6 @@ module "ingress" {
   source = "../modules/ingress"
 
   subnet_ids = data.aws_subnet.public.ids
-
-  depends_on = [aws_eks_cluster.main]
 }
 
 ###
