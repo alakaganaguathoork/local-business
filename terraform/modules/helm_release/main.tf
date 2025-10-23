@@ -12,6 +12,8 @@ resource "helm_release" "this" {
   cleanup_on_fail  = try(var.release.cleanup_on_fail, true)
   atomic           = try(var.release.atomic, true)
   force_update     = try(var.release.force_update, true)
+  lint             = try(var.release.lint, true)
+  replace          = true
   version          = try(var.release.version, null)
   values           = [data.http.custom_values.response_body]
 
