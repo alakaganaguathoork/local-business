@@ -19,9 +19,20 @@ server:
       # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:REGION:ACCT:certificate/UUID
       # alb.ingress.kubernetes.io/ssl-redirect: "443"
     hosts: []
+    # path: /
+    # pathType: Prefix
     path: /
-    pathType: Prefix
-    extraRules: [] 
+    extraRules:
+      - http:
+          paths:
+            - path: /
+              pathType: Prefix
+              backend:
+                service:
+                  name: prmetheus-server
+                  port:
+                    number: 80
+    # extraRules: [] 
   
     # EKS: keep persistence on gp3 (or your default SC)
   persistentVolume:
