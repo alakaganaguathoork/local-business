@@ -1,6 +1,6 @@
 locals {
-  env = "test"
-  region = "us-east-1"
+  env          = "test"
+  region       = "us-east-1"
   cluster_name = "sandbox"
 
   helm_releases = {
@@ -17,6 +17,7 @@ locals {
       namespace       = "monitoring"
       repository      = "https://prometheus-community.github.io/helm-charts"
       chart           = "prometheus"
+      create_ingress  = true
     }
     grafana = {
       values_file_url = "https://raw.githubusercontent.com/alakaganaguathoork/local-business/refs/heads/main/helm/helpers/grafana/grafana-custom-values-aws.yaml"

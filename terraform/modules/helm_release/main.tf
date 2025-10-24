@@ -21,3 +21,43 @@ resource "helm_release" "this" {
 
   timeout = 999
 }
+
+resource "kubernetes_manifest" "prom_ing" {
+  count = var.release.create_ingress ? 1 : 0
+
+  manifest = {
+    apiVersion = "networking.k8s.io/v1"
+    kind       = "Ingress"
+    metadata = {
+      name      = "${var.release.name}-server"
+      namespace = "${var.release.namespace}"
+      annotations = {
+        "kubernetes.io/ingress.class"                = "alb"
+        "alb.ingress.kubernetes.io/target-type"      = "ip"
+        "alb.ingress.kubernetes.io/listen-ports"     = "[{\"HTTP\":80}, {\"HTTP\":443}]"
+        "alb.ingress.kubernetes.io/healthcheck-path" = "/-/healthy" # Needs to be adjusted
+        # If you’re sharing one ALB across apps:
+        # "alb.ingress.kubernetes.io/group.name"   = "shared-alb"
+        # "alb.ingress.kubernetes.io/group.order"  = "10"
+      }
+    }
+    spec = {
+      rules = [{
+        http = {
+          paths = [{
+            path     = "/"
+            pathType = "Prefix"
+            backend = {
+              service = {
+                name = "${var.release.name}-server"
+                port = { number = 80 }
+              }
+            }
+          }]
+        }
+      }]
+    }
+  }
+}
+
+

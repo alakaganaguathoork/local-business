@@ -10,5 +10,6 @@ variable "release" {
     force_update    = optional(bool)
     lint            = optional(bool)
     version         = optional(string)
+    create_ingress  = optional(bool, false)
   })
 }

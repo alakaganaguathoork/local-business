@@ -1,6 +1,5 @@
 resource "kubernetes_manifest" "alb_params" {
   manifest = {
-    # apiVersion = "eks.amazonaws.com/v1"
     apiVersion = "eks.amazonaws.com/v1"
     kind       = "IngressClassParams"
     metadata   = { name = "alb" }
