@@ -1,7 +1,7 @@
 resource "kubernetes_manifest" "alb_params" {
   manifest = {
     # apiVersion = "eks.amazonaws.com/v1"
-    apiVersion = "elbv2.k8s.aws/v1beta1"
+    apiVersion = "eks.amazonaws.com/v1"
     kind       = "IngressClassParams"
     metadata   = { name = "alb" }
     spec = {
@@ -9,9 +9,7 @@ resource "kubernetes_manifest" "alb_params" {
       scheme = "internet-facing" # or "internal"
       subnets = { ids = var.subnet_ids }
       ipAddressType = "ipv4"
-      group = {
-        name = "shared-alb"
-      }
+
       # Optional: ACM certs for HTTPS
       # certificateARNs = [
       #   "arn:aws:acm:REGION:ACCOUNT:certificate/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
@@ -19,7 +17,7 @@ resource "kubernetes_manifest" "alb_params" {
 
       # Optional: extra AWS tags on created resources (LIST of {key,value})
       # tags = [
-      # { key = "Type", value = "shared" }
+      # { key = "App", value = "argocd" }
       # ]
 
       # Optional: ALB attributes (LIST of {key,value})
