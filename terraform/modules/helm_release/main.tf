@@ -42,7 +42,7 @@ resource "kubernetes_manifest" "custom_ingress" {
       }
     }
     spec = {
-      ingressClass = "alb"
+      ingressClassName = "alb"
       rules = [{
         http = {
           paths = [{
