@@ -54,8 +54,6 @@ resource "kubernetes_ingress_class_v1" "alb" {
 }
 
 resource "kubernetes_manifest" "custom_ingress" {
-  count = var.release.create_ingress ? 1 : 0
-
   manifest = {
     apiVersion = "networking.k8s.io/v1"
     kind       = "Ingress"
