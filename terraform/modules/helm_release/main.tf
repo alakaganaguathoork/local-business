@@ -39,7 +39,7 @@ resource "kubernetes_manifest" "custom_ingress" {
         "alb.ingress.kubernetes.io/target-type"        = "ip"
         "alb.ingress.kubernetes.io/listen-ports"       = "[{\"HTTP\":80},{\"HTTPS\":443}]"
         "alb.ingress.kubernetes.io/healthcheck-path"   = "/-/healthy" # Needs to be adjusted
-        # "alb.ingress.kubernetes.io/certificate-arn"    = "arn:aws:acm:us-east-1:838062310110:certificate/e002b877-ce84-4af4-b696-48853ef46739"
+        "alb.ingress.kubernetes.io/certificate-arn"    = "arn:aws:acm:us-east-1:838062310110:certificate/e002b877-ce84-4af4-b696-48853ef46739"
         #  "arn:aws:acm:us-east-1:838062310110:certificate/e002b877-ce84-4af4-b696-48853ef46739"
         # If you’re sharing one ALB across apps:
         # "alb.ingress.kubernetes.io/group.name"   = "shared-alb"
