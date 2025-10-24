@@ -5,7 +5,7 @@ server:
     enabled: true
     ingressClassName: alb
     annotations:
-      kubernetes.io/ingress.class: alb
+      # kubernetes.io/ingress.class: alb
       # alb.ingress.kubernetes.io/load-balancer-name: monitoring-alb
       # alb.ingress.kubernetes.io/group.name: shared-alb      # use group only if you want to override it or use a non-default
       # alb.ingress.kubernetes.io/group.order: "10"       # (rule priority among group)
@@ -19,8 +19,9 @@ server:
       # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:REGION:ACCT:certificate/UUID
       # alb.ingress.kubernetes.io/ssl-redirect: "443"
     hosts: []
-    path: /prometheus
+    path: /
     pathType: Prefix
+    extraRules: []
     # path: /
     # extraRules:
       # - http:
@@ -31,8 +32,7 @@ server:
                 # service:
                   # name: prometheus-server
                   # port:
-                    # number: 80
-    # extraRules: [] 
+                    # number: 80 
   
     # EKS: keep persistence on gp3 (or your default SC)
   persistentVolume:
