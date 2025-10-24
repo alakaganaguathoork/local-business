@@ -2,10 +2,10 @@ resource "kubernetes_manifest" "alb_params" {
   manifest = {
     apiVersion = "eks.amazonaws.com/v1"
     kind       = "IngressClassParams"
-    
-    metadata   = { 
-      name = "shared-alb" 
-      }
+
+    metadata = {
+      name = "shared-alb"
+    }
 
     spec = {
       # Required/commonly used
@@ -45,6 +45,7 @@ resource "kubernetes_ingress_class_v1" "alb" {
   }
   spec {
     controller = "eks.amazonaws.com/alb"
+
     parameters {
       api_group = "eks.amazonaws.com"
       kind      = "IngressClassParams"
@@ -76,19 +77,35 @@ resource "kubernetes_manifest" "custom_ingress" {
       rules = [{
         http = {
           paths = [{
-            path     = "/grafana"
+            path     = "monitoring/grafana"
             pathType = "Prefix"
             backend = {
               service = {
                 name = "grafana"
                 port = { number = 80 }
               }
-            },
-            path     = "/prometheus"
+            }
+            path     = "monitoring/prometheus"
             pathType = "Prefix"
             backend = {
               service = {
                 name = "prometheus-server"
+                port = { number = 80 }
+              }
+            }
+            path     = "monitoring/argocd"
+            pathType = "Prefix"
+            backend = {
+              service = {
+                name = "argocd-server"
+                port = { number = 80 }
+              }
+            }
+            path     = "app"
+            pathType = "Prefix"
+            backend = {
+              service = {
+                name = "local-business"
                 port = { number = 80 }
               }
             }
