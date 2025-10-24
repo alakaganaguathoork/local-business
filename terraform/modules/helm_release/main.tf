@@ -59,21 +59,5 @@ resource "kubernetes_manifest" "custom_ingress" {
     }
   }
 
-  depends_on = [
-    helm_release.this,
-    kubernetes_storage_class_v1.gp3
-  ]
+  depends_on = [helm_release.this]
 }
-
-resource "kubernetes_storage_class_v1" "gp3" {
-  metadata { name = "gp3" }
-  storage_provisioner    = "ebs.csi.eks.amazonaws.com" # Auto Mode
-  allow_volume_expansion = true
-  volume_binding_mode    = "WaitForFirstConsumer"
-  parameters = {
-    type      = "gp3"
-    encrypted = "true"
-  }
-}
-
-

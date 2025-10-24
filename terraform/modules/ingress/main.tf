@@ -39,3 +39,15 @@ resource "kubernetes_ingress_class_v1" "alb" {
     }
   }
 }
+
+resource "kubernetes_storage_class_v1" "gp3" {
+  metadata { name = "gp3" }
+  storage_provisioner    = "ebs.csi.eks.amazonaws.com" # Auto Mode
+  allow_volume_expansion = true
+  volume_binding_mode    = "WaitForFirstConsumer"
+  parameters = {
+    type      = "gp3"
+    encrypted = "true"
+  }
+}
+
