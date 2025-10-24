@@ -21,8 +21,8 @@ ingress:
     # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:REGION:ACCT:certificate/UUID
     alb.ingress.kubernetes.io/ssl-redirect: "443"
   hosts: []
-  # path: /
-  # pathType: Prefix
+  path: /grafana
+  pathType: Prefix
   extraPaths:
     - path: /grafana
       pathType: Prefix
