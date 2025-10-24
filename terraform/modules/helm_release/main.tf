@@ -45,6 +45,8 @@ resource "kubernetes_manifest" "custom_ingress" {
     }
     spec = {
       ingressClassName = "alb"
+      path             = "/prometheus"
+      pathType         = "Prefix"
       rules = [{
         http = {
           paths = [{
