@@ -46,9 +46,8 @@ jobs:
               inputs:
                 targetType: inline
                 script: |
-                  # pwd
-                  # touch $(System.DefaultWorkingDirectory)/.sg-ids.output
-                  # echo "^ file created"
+                  pwd
+                  touch .sg-ids.output
                   ls -lha .
                   VPC_ID=$(aws eks describe-cluster \
                     --name "${{ parameters.awsClusterName }}" \
