@@ -34,11 +34,11 @@ server:
     
     # https://docs.aws.amazon.com/eks/latest/userguide/deploy-prometheus.html
   persistentVolume:
-    storageClass: "gp2"
+    storageClass: "gp3"
 
 alertmanager:
   persistence:
-    storageClass: "gp2"
+    storageClass: "gp3"
 
     # EKS: keep persistence on gp3 (or your default SC)
   # persistentVolume:
