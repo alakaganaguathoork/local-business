@@ -15,6 +15,7 @@ resource "helm_release" "this" {
   lint             = try(var.release.lint, true)
   replace          = true
   reuse_values     = true
+  skip_crds        = true
   version          = try(var.release.version, null)
   values           = [data.http.custom_values.response_body]
 
