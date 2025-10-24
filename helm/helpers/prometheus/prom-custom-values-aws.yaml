@@ -6,18 +6,18 @@ server:
     ingressClassName: alb
     annotations:
       kubernetes.io/ingress.class: alb
-      alb.ingress.kubernetes.io/load-balancer-name: shared-alb
+      alb.ingress.kubernetes.io/load-balancer-name: monitoring-alb
       alb.ingress.kubernetes.io/group.name: shared-alb
       alb.ingress.kubernetes.io/group.order: "10"          # (rule priority among group)
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/target-type: ip
-      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+      # alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
       alb.ingress.kubernetes.io/healthcheck-path: /-/healthy
 
         # For HTTPS
-      # alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
       # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:REGION:ACCT:certificate/UUID
-      # alb.ingress.kubernetes.io/ssl-redirect: "443"
+      alb.ingress.kubernetes.io/ssl-redirect: "443"
     hosts: []
     path: /prometheus
     pathType: Prefix
