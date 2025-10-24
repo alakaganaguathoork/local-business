@@ -32,7 +32,7 @@ server:
                   # port:
                     # number: 80 
     
-    # https://docs.aws.amazon.com/eks/latest/userguide/deploy-prometheus.html
+    # https://docs.aws.amazon.com/eks/latest/userguide/deploy-prometheus.html + a custom storageClass gp3 was needed (via terraform)
   persistentVolume:
     storageClass: "gp3"
 
