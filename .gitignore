@@ -12,10 +12,9 @@ app/logs/
 app/**/.venv*/
 app/.env
 
-# kubernetes files
-kubernetes/**/.*
-!kubernetes/helm/**/.helmignore
-
+# helm directory
+!/helm/**/.helmignore
+helm/helpers/**/*-values.yaml
 
 # terraform/ directories
 terraform/**/.terraform/
@@ -31,21 +30,6 @@ terraform/**/*tfplan*
 terraform/**/*.output
 !terraform/**/.terraformignore
 
-# vagrant
-vagrant/.vagrant/
-vagrant/**/.vagrant/
-vagrant/shared/
-vagrant/**/shared/
-vagrant/*-console.log
-vagrant/**/*-console.log
-
 # monitoring
 monitoring/**/.env
 monitoring/**/generated/
-
-# libvirt
-libvirt/iso/
-libvirt/disks/
-
-#vpn
-vpn/**/generated-certs/

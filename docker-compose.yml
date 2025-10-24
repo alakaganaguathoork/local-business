@@ -1,0 +1,118 @@
+services:
+  app:
+    image: alakaganaguathoork/local-business:latest
+    container_name: local-business
+    restart: unless-stopped
+    # build:
+      # dockerfile: Dockerfile
+    volumes:
+      - "./app/:/app"
+    # user: "${UID:-0}:${GID:-0}"
+    env_file: 
+     - path: ./app/.env
+       required: true
+    ports: 
+      - "5400:5400"
+
+  local-db:
+    image: mysql
+    container_name: local-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    # volumes:
+      # - .docker/local_db_storage:
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/prometheus/prometheus.rules.yml:/etc/prometheus/prometheus.rules.yml
+      - ./monitoring/prometheus/targets.yml:/etc/prometheus/targets/internal_monitoring_targets.yml
+      - .docker/prometheus_data:/prometheus
+    user: "${UID:-0}:${GID:-0}"
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --web.console.libraries=/etc/prometheus/console_libraries
+      - --web.console.templates=/etc/prometheus/consoles
+      - --web.enable-lifecycle
+    ports:
+      - "9090:9090"
+  
+  alertmanager:
+    image: prom/alertmanager
+    container_name: alert_manager
+    restart: unless-stopped
+    depends_on:
+      - prometheus
+    command: 
+      - --config.file=/etc/alertmanager/alertmanager.yml
+      - --log.level=debug
+    volumes:
+      - ./monitoring/alertmanager/generated/alertmanager.yml:/etc/alertmanager/alertmanager.yml
+    ports:
+      - "9093:9093"
+
+  node-exporter:
+    image: prom/node-exporter
+    container_name: node_exporter
+    depends_on:
+      - prometheus
+    command: 
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - '--path.rootfs=/rootfs'
+    pid: host 
+    restart: unless-stopped
+    volumes:
+      - '/proc:/host/proc:ro,rslave'
+      - '/sys:/host/sys:ro,rslave'
+      - '/:/rootfs:ro,rslave'
+    network_mode: host
+    expose:
+      - 9100
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: unless-stopped
+    volumes:
+      - .docker/grafana_storage:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    user: "${UID:-0}:${GID:-0}"
+    ports:
+      - "3000:3000"
+  
+  loki:
+    image: grafana/loki:latest
+    container_name: loki
+    links:
+      - grafana
+    restart: unless-stopped
+    ports:
+      - "3100:3100"
+    
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    depends_on:
+      - loki
+    restart: unless-stopped
+    volumes:
+      - ./monitoring/alloy/config:/etc/alloy
+    command:
+      - run
+      - /etc/alloy/config.alloy
+      - --storage.path=/var/lib/alloy/data
+      - --server.http.listen-addr=0.0.0.0:12345
+    ports:
+      - "12345:12345"
+
+volumes:
+  prometheus_data: {}
+  grafana_storage: {}
+  local_db_storage: {}

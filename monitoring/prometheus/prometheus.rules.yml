@@ -1,0 +1,14 @@
+groups:
+  - name: node_exporter_alert
+    rules:
+      - record: job_instance_mode:node_cpu_seconds:avg_rate5m
+        expr: avg by (job, instance, mode) (rate(node_cpu_seconds_total[5m]))
+  
+      - alert: InstanceDown
+        expr: up == 0
+        for: 5m
+        labels:
+          severity: instance_down
+        annotations:
+          description: '{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 5 minutes.'
+          summary: 'Instance {{ $labels.instance }} is down'

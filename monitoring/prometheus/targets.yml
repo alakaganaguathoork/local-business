@@ -1,0 +1,4 @@
+- targets:
+  - 'localhost:9090'
+  labels:
+    purpose: 'internal_monitoring'

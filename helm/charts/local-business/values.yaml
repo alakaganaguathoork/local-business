@@ -1,0 +1,19 @@
+app:
+  name: local-business
+
+namespace:
+  name: app
+
+environment: local
+
+service:
+  type: ClusterIP
+  internalLB: false
+  ports:
+    port: 80
+    targetPort: 5400
+
+ingress:
+  spec:
+    rules:
+      host: local-business
