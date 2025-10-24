@@ -4,13 +4,14 @@ ingress:
   enabled: true
   ingressClassName: alb
   annotations:
-    # kubernetes.io/ingress.class: alb
-    # alb.ingress.kubernetes.io/load-balancer-name: shared-alb
-    # alb.ingress.kubernetes.io/group.name: monitoring-alb    # use group only if you want to override it or use a non-default
-    # alb.ingress.kubernetes.io/group.order: "20"
-    # alb.ingress.kubernetes.io/scheme: internet-facing
-    # alb.ingress.kubernetes.io/target-type: ip
-    # alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/load-balancer-name: shared-alb
+    alb.ingress.kubernetes.io/group.name: shared-alb    # use group only if you want to override it or use a non-default
+    alb.ingress.kubernetes.io/group.order: "20"
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80},{"HTTPS":443}]'
+    alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:838062310110:certificate/e002b877-ce84-4af4-b696-48853ef46739"
     alb.ingress.kubernetes.io/healthcheck-path: /api/health
     # Optional: restrict who can reach it
     alb.ingress.kubernetes.io/inbound-cidrs: 91.198.233.56/32
@@ -18,11 +19,18 @@ ingress:
     # For HTTPS
     # alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":80},{"HTTPS":443}]'
     # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:REGION:ACCT:certificate/UUID
-    # alb.ingress.kubernetes.io/ssl-redirect: "443"
+    alb.ingress.kubernetes.io/ssl-redirect: "443"
   hosts: []
-  path: /
-  pathType: Prefix
-  extraPaths: []
+  # path: /
+  # pathType: Prefix
+  extraPaths:
+    - path: /grafana
+      pathType: Prefix
+      backend:
+        service:
+          name: grafana
+          port:
+            number: 80
 
   # extraPaths:
     # - path: /
