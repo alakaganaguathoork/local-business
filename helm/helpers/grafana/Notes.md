@@ -3,7 +3,7 @@
 1. Install
 
     ```bash
-    helm upgrade --install grafana grafana/grafana --namespace monitoring --create-namespace --values kubernetes/helm/helpers/grafana/grafana-custom-values-local.yaml
+    helm upgrade --install grafana grafana/grafana --namespace monitoring --create-namespace --values helm/helpers/grafana/grafana-custom-values-local.yaml
     ```
 
 2. Add Ingress Hostname:

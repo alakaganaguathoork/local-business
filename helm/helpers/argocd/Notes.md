@@ -3,7 +3,7 @@
 1. Install using Helm chart
 
     ```bash
-    helm upgrade --install argocd argo/argo-cd --namespace argocd --create-namespace --reuse-values --values ./argocd-custom-values-local.yaml
+    helm upgrade --install argocd argo/argo-cd --namespace argocd --create-namespace --reuse-values --values helm/helpers/argocd/argocd-custom-values-aws.yaml
     ```
 
 2. Get Ingress Hostname:

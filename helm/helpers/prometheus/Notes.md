@@ -5,7 +5,7 @@
 1. Install Prometheus
   
   ```bash
-  helm upgrade --install prometheus prometheus-community/prometheus --namespace monitoring --create-namespace --values kubernetes/helm/helpers/prometheus/prom-custom-values-aws.yaml
+  helm upgrade --install prometheus prometheus-community/prometheus --namespace monitoring --create-namespace --values helm/helpers/prometheus/prom-custom-values-aws.yaml
   ```
 
 2. Get Ingress Hostname:
