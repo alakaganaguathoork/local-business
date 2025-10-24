@@ -11,9 +11,9 @@ ingress:
     # alb.ingress.kubernetes.io/scheme: internet-facing
     # alb.ingress.kubernetes.io/target-type: ip
     # alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
-    # alb.ingress.kubernetes.io/healthcheck-path: /api/health
+    alb.ingress.kubernetes.io/healthcheck-path: /api/health
     # Optional: restrict who can reach it
-    # alb.ingress.kubernetes.io/inbound-cidrs: 1.2.3.4/32
+    alb.ingress.kubernetes.io/inbound-cidrs: 91.198.233.56/32
     
     # For HTTPS
     # alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":80},{"HTTPS":443}]'
