@@ -101,7 +101,7 @@ resource "kubernetes_manifest" "custom_ingress" {
                 port = { number = 80 }
               }
             }
-            path     = "app"
+            path     = "local-business"
             pathType = "Prefix"
             backend = {
               service = {
