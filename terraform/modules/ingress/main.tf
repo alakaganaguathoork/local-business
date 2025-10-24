@@ -76,40 +76,48 @@ resource "kubernetes_manifest" "custom_ingress" {
       ingressClassName = "alb"
       rules = [{
         http = {
-          paths = [{
-            path     = "monitoring/grafana"
-            pathType = "Prefix"
-            backend = {
-              service = {
-                name = "grafana"
-                port = { number = 80 }
+          paths = [
+            {
+              path     = "/monitoring/grafana"
+              pathType = "Prefix"
+              backend = {
+                service = {
+                  name = "grafana"
+                  port = { number = 80 }
+                }
+              }
+            },
+            {
+              path     = "/monitoring/prometheus"
+              pathType = "Prefix"
+              backend = {
+                service = {
+                  name = "prometheus-server"
+                  port = { number = 80 }
+                }
+              }
+            },
+            {
+              path     = "/monitoring/argocd"
+              pathType = "Prefix"
+              backend = {
+                service = {
+                  name = "argocd-server"
+                  port = { number = 80 }
+                }
+              }
+            },
+            {
+              path     = "/local-business"
+              pathType = "Prefix"
+              backend = {
+                service = {
+                  name = "local-business"
+                  port = { number = 80 }
+                }
               }
             }
-            path     = "monitoring/prometheus"
-            pathType = "Prefix"
-            backend = {
-              service = {
-                name = "prometheus-server"
-                port = { number = 80 }
-              }
-            }
-            path     = "monitoring/argocd"
-            pathType = "Prefix"
-            backend = {
-              service = {
-                name = "argocd-server"
-                port = { number = 80 }
-              }
-            }
-            path     = "local-business"
-            pathType = "Prefix"
-            backend = {
-              service = {
-                name = "local-business"
-                port = { number = 80 }
-              }
-            }
-          }]
+          ]
         }
       }]
     }
