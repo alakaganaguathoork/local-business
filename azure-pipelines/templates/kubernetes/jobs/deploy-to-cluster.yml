@@ -49,8 +49,8 @@ jobs:
                   # pwd
                   # touch $(System.DefaultWorkingDirectory)/.sg-ids.output
                   # echo "^ file created"
-                  ls -lh .
-                  VPC_ID=$(aws eks describe-cluster 
+                  ls -lha .
+                  VPC_ID=$(aws eks describe-cluster \
                     --name "${{ parameters.awsClusterName }}" \
                     --query 'cluster.resourcesVpcConfig.vpcId' \
                     --output text
@@ -62,7 +62,7 @@ jobs:
                     > .sg-ids.output
                   echo "VPC ID=$VPC_ID"
 
-                  mv .sg-ids.output /helm/charts/local-business/
+                  mv ./.sg-ids.output /helm/charts/local-business/
 
             # - ${{ if gt(length(parameters.manifests), 0) }}:
               # - ${{ each item in parameters.manifests }}:
