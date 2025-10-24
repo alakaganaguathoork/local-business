@@ -33,10 +33,10 @@
                     # number: 80 
   
     # EKS: keep persistence on gp3 (or your default SC)
-  # persistentVolume:
-    # enabled: true
-    # size: 8Gi
-    # storageClass: gp3               # EKS
+  persistentVolume:
+    enabled: true
+    size: 1Gi
+    storageClass: gp3               # EKS
   
     # Make /data writable for Prometheus (non-root UID 65534)
   # podSecurityContext:
