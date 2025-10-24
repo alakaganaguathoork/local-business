@@ -61,7 +61,9 @@ jobs:
                     > .sg-ids.output
                   echo "VPC ID=$VPC_ID"
 
-                  mv ./.sg-ids.output /helm/charts/local-business/
+                  ls -lha .
+
+                  mv .sg-ids.output /helm/charts/local-business/
 
             # - ${{ if gt(length(parameters.manifests), 0) }}:
               # - ${{ each item in parameters.manifests }}:
