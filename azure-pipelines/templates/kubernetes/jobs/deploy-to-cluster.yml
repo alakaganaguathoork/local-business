@@ -63,7 +63,7 @@ jobs:
 
                   ls -lha .
 
-                  mv .sg-ids.output /helm/charts/local-business/
+                  mv .sg-ids.output helm/charts/local-business/
 
             # - ${{ if gt(length(parameters.manifests), 0) }}:
               # - ${{ each item in parameters.manifests }}:
