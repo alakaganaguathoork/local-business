@@ -22,7 +22,7 @@ resource "helm_release" "this" {
   timeout = 999
 }
 
-resource "kubernetes_manifest" "prom_ing" {
+resource "kubernetes_manifest" "custom_ingress" {
   count = var.release.create_ingress ? 1 : 0
 
   manifest = {
