@@ -1,8 +1,8 @@
-server:
-  ingress:
-    enabled: true
-    ingressClassName: alb
-    annotations:
+# server:
+  # ingress:
+    # enabled: true
+    # ingressClassName: alb
+    # annotations:
       # kubernetes.io/ingress.class: alb
       # alb.ingress.kubernetes.io/load-balancer-name: monitoring-alb
       # alb.ingress.kubernetes.io/group.name: shared-alb      # use group only if you want to override it or use a non-default
@@ -16,10 +16,10 @@ server:
       # alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
       # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:REGION:ACCT:certificate/UUID
       # alb.ingress.kubernetes.io/ssl-redirect: "443"
-    hosts: []
-    path: /
-    pathType: Prefix
-    extraRules: []
+    # hosts: []
+    # path: /
+    # pathType: Prefix
+    # extraRules: []
     # path: /
     # extraRules:
       # - http:
@@ -84,7 +84,7 @@ extraScrapeConfigs: |
       - role: pod
         namespaces:
           names: ["app"]
-          
+
     relabel_configs:
       # keep only pods with label app.kubernetes.io/name=local-business
       - action: keep
