@@ -5,6 +5,7 @@ data "http" "custom_values" {
 
 data "kubernetes_namespace_v1" "existing" {
   metadata {
+    name = var.release.namespace
     labels = {
       "kubernetes.io/metadata.name" = var.release.namespace
       name                          = var.release.namespace
@@ -14,7 +15,7 @@ data "kubernetes_namespace_v1" "existing" {
 
 resource "kubernetes_namespace_v1" "this" {
   count = data.kubernetes_namespace_v1.existing.id ? 1 : 0
-  
+
   metadata {
     name = var.release.namespace
     labels = {
