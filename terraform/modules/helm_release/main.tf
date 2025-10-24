@@ -19,7 +19,7 @@ resource "helm_release" "this" {
   version          = try(var.release.version, null)
   values           = [data.http.custom_values.response_body]
 
-  depends_on = [kubernetes_namespace_v1.this]
+  depends_on = [data.http.custom_values]
 }
 
 resource "kubernetes_manifest" "custom_ingress" {
