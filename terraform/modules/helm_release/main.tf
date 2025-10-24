@@ -3,7 +3,18 @@ data "http" "custom_values" {
   request_headers = { Accept = "text/yaml" }
 }
 
+data "kubernetes_namespace_v1" "existing" {
+  metadata {
+    labels = {
+      "kubernetes.io/metadata.name" = var.release.namespace
+      name                          = var.release.namespace
+    }
+  }
+}
+
 resource "kubernetes_namespace_v1" "this" {
+  count = data.kubernetes_namespace_v1.existing.id ? 1 : 0
+  
   metadata {
     name = var.release.namespace
     labels = {
@@ -30,7 +41,7 @@ resource "helm_release" "this" {
   version          = try(var.release.version, null)
   values           = [data.http.custom_values.response_body]
 
-  depends_on = [ kubernetes_namespace_v1.this ]
+  depends_on = [kubernetes_namespace_v1.this]
 }
 
 resource "kubernetes_manifest" "custom_ingress" {
