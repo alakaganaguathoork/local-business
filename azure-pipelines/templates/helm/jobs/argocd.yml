@@ -62,8 +62,8 @@ jobs:
               inputs:
                 targetType: inline
                 script: |
-                  $ARGO_ADMIN_PWD="admin"
-                  EARGO_PWD=$(htpasswd -nbBC 10 "" $ARGO_ADMIN_PWD | tr -d ':\n' | sed 's/^\$2y/\$2a/') 
+                  ARGO_ADMIN_PWD="admin"
+                  EARGO_PWD=$(htpasswd -nbBC 10 "" "$ARGO_ADMIN_PWD" | tr -d ':\n' | sed 's/^\$2y/\$2a/') 
 
                   kubectl -n argocd patch secret argocd-secret \
                     --type merge \
