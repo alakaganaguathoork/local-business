@@ -6,9 +6,9 @@ server:
     ingressClassName: alb
     annotations:
       kubernetes.io/ingress.class: alb
-      alb.ingress.kubernetes.io/load-balancer-name: monitoring-alb
-      alb.ingress.kubernetes.io/group.name: shared-alb
-      alb.ingress.kubernetes.io/group.order: "10"          # (rule priority among group)
+      # alb.ingress.kubernetes.io/load-balancer-name: monitoring-alb
+      alb.ingress.kubernetes.io/group.name: shared-alb      # use group only if you want to override it or use a non-default
+      alb.ingress.kubernetes.io/group.order: "10"       # (rule priority among group)
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/target-type: ip
       # alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'

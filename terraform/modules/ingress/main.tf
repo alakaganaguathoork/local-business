@@ -1,27 +1,17 @@
 resource "kubernetes_manifest" "alb_params" {
   manifest = {
-    apiVersion = "eks.amazonaws.com/v1"
+    # apiVersion = "eks.amazonaws.com/v1"
+    apiVersion = "elbv2.k8s.aws/v1beta1"
     kind       = "IngressClassParams"
     metadata   = { name = "alb" }
     spec = {
       # Required/commonly used
       scheme = "internet-facing" # or "internal"
-
-      # Optional: choose one of these subnet selectors
-      # (A) explicit subnet IDs
       subnets = { ids = var.subnet_ids }
-
-      # (B) tag-based selection (note: matchTags is a LIST of {key,value})
-      # subnets = {
-      # matchTags = [
-      # { key = "kubernetes.io/role/elb", value = "1" },
-      # { key = "kubernetes.io/cluster/${var.cluster.name}", value = "owned" }
-      # ]
-      # }
-
-      # Optional: ALB IP mode
-      # ipAddressType = "dualstack"  # or "ipv4"
-
+      ipAddressType = "ipv4"
+      group = {
+        name = "shared-alb"
+      }
       # Optional: ACM certs for HTTPS
       # certificateARNs = [
       #   "arn:aws:acm:REGION:ACCOUNT:certificate/XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
@@ -29,7 +19,7 @@ resource "kubernetes_manifest" "alb_params" {
 
       # Optional: extra AWS tags on created resources (LIST of {key,value})
       # tags = [
-      # { key = "App", value = "argocd" }
+      # { key = "Type", value = "shared" }
       # ]
 
       # Optional: ALB attributes (LIST of {key,value})

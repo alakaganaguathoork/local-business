@@ -26,19 +26,19 @@ server:
     annotations:
       kubernetes.io/ingress.class: alb
       # alb.ingress.kubernetes.io/load-balancer-name: shared-alb
-      # alb.ingress.kubernetes.io/group.name: shared-alb
+      alb.ingress.kubernetes.io/group.name: shared-alb    # use group only if you want to override it or use a non-default
       # alb.ingress.kubernetes.io/group.order: "30"
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/target-type: ip
       # alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
 
       # For HTTPS instead:
-      alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":80}б{"HTTPS":443}]'
       # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:REGION:ACCT:certificate/UUID
       # lb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:REGION:ACCT:certificate/AAA,arn:aws:acm:.../BBB # <-- for shared ingress
       alb.ingress.kubernetes.io/ssl-redirect: "443"
     extraRules: []
-    path: /
+    path: /argocd
     pathType: Prefix
     # path: /
     # extraRules:
