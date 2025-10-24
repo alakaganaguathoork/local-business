@@ -46,7 +46,10 @@ jobs:
               inputs:
                 targetType: inline
                 script: |
+                  pwd
                   touch .sg-ids.output
+                  echo "^ file created"
+                  ls -lh
                   VPC_ID=$(aws eks describe-cluster --name "${{ parameters.awsClusterName }}" --query 'cluster.resourcesVpcConfig.vpcId' --output text)
                   aws ec2 describe-security-groups --filters Name=vpc-id,Values=$VPC_ID --query 'SecurityGroups[*].GroupId' > .sg-ids.output
                   echo "VPC ID=$VPC_ID"
