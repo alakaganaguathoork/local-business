@@ -58,6 +58,8 @@ resource "kubernetes_manifest" "prom_ing" {
       }]
     }
   }
+
+  depends_on = [helm_release.this]
 }
 
 
