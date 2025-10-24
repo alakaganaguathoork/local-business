@@ -3,29 +3,6 @@ data "http" "custom_values" {
   request_headers = { Accept = "text/yaml" }
 }
 
-data "kubernetes_namespace_v1" "existing" {
-  metadata {
-    name = var.release.namespace
-    labels = {
-      "kubernetes.io/metadata.name" = var.release.namespace
-      name                          = var.release.namespace
-    }
-  }
-}
-
-resource "kubernetes_namespace_v1" "this" {
-  count = tobool(data.kubernetes_namespace_v1.existing.id) ? 1 : 0
-
-  metadata {
-    name = var.release.namespace
-    labels = {
-      "kubernetes.io/metadata.name" = var.release.namespace
-      name                          = var.release.namespace
-    }
-  }
-}
-
-
 resource "helm_release" "this" {
   name             = var.release.name
   namespace        = var.release.namespace
