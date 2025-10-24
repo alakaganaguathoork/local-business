@@ -46,15 +46,16 @@ jobs:
               inputs:
                 targetType: inline
                 script: |
+                  # cd terraform/aws/projects/eks-automode
                   pwd
-                  touch .sg-ids.output
+                  touch $(System.DefaultWorkingDirectory)/.sg-ids.output
                   echo "^ file created"
-                  ls -lh
+                  ls -lh $(System.DefaultWorkingDirectory)/
                   VPC_ID=$(aws eks describe-cluster --name "${{ parameters.awsClusterName }}" --query 'cluster.resourcesVpcConfig.vpcId' --output text)
                   aws ec2 describe-security-groups --filters Name=vpc-id,Values=$VPC_ID --query 'SecurityGroups[*].GroupId' > .sg-ids.output
                   echo "VPC ID=$VPC_ID"
 
-                  mv .sg-ids.output $(System.DefaultWorkingDirectory)/helm/charts/local-business/
+                  mv $(System.DefaultWorkingDirectory)/.sg-ids.output $(System.DefaultWorkingDirectory)/helm/charts/local-business/
 
             # - ${{ if gt(length(parameters.manifests), 0) }}:
               # - ${{ each item in parameters.manifests }}:
