@@ -46,16 +46,12 @@ jobs:
               inputs:
                 targetType: inline
                 script: |
-                  # cd terraform/aws/projects/eks-automode
-                  pwd
                   touch .sg-ids.output
-                  echo "^ file created"
-                  ls -lh
                   VPC_ID=$(aws eks describe-cluster --name "${{ parameters.awsClusterName }}" --query 'cluster.resourcesVpcConfig.vpcId' --output text)
                   aws ec2 describe-security-groups --filters Name=vpc-id,Values=$VPC_ID --query 'SecurityGroups[*].GroupId' > .sg-ids.output
                   echo "VPC ID=$VPC_ID"
 
-                  mv .sg-ids.output $(System.DefaultWorkingDirectory)/kubernetes/helm/charts/local-business/
+                  mv .sg-ids.output $(System.DefaultWorkingDirectory)/helm/charts/local-business/
 
             # - ${{ if gt(length(parameters.manifests), 0) }}:
               # - ${{ each item in parameters.manifests }}:
@@ -77,9 +73,9 @@ jobs:
                   helm uninstall local-business -n app || true
                   kubectl delete namespace app --ignore-not-found
 
-                  # helm upgrade --install local-business kubernetes/helm/local-business --values kubernetes/helm/local-business/values.yaml
-                  kubectl apply -n argocd -f $(System.DefaultWorkingDirectory)/kubernetes/helm/application-aws.yaml
-                  rm kubernetes/helm/charts/local-business/.sg-ids.output
+                  # helm upgrade --install local-business kubernetes/helm/local-business --values /helm/local-business/values.yaml
+                  kubectl apply -n argocd -f $(System.DefaultWorkingDirectory)/helm/applications/application-aws.yaml
+                  rm $(System.DefaultWorkingDirectory)/helm/charts/local-business/.sg-ids.output
                 
             - task: Bash@3
               name: endpoint

@@ -54,7 +54,7 @@ jobs:
             #         --namespace $(namespace) \
             #         --create-namespace \
             #         --reuse-values \
-            #         --values $(System.DefaultWorkingDirectory)/kubernetes/helm/helpers/argocd/argocd-custom-values-local.yaml
+            #         --values $(System.DefaultWorkingDirectory)/helm/helpers/argocd/argocd-custom-values-local.yaml
                   
             - task: Bash@3
               name: argocd_get_admin_password

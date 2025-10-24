@@ -52,4 +52,4 @@ jobs:
                     --namespace $(namespace) \
                     --create-namespace \
                     --reuse-values \
-                    --values $(System.DefaultWorkingDirectory)/kubernetes/helm/helpers/prometheus/prom-custom-values-aws.yaml
+                    --values $(System.DefaultWorkingDirectory)/helm/helpers/prometheus/prom-custom-values-aws.yaml
