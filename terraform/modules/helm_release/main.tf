@@ -3,6 +3,17 @@ data "http" "custom_values" {
   request_headers = { Accept = "text/yaml" }
 }
 
+resource "kubernetes_namespace_v1" "this" {
+  metadata {
+    name = var.release.namespace
+    labels = {
+      "kubernetes.io/metadata.name" = var.release.namespace
+      name                          = var.release.namespace
+    }
+  }
+}
+
+
 resource "helm_release" "this" {
   name             = var.release.name
   namespace        = var.release.namespace
@@ -19,7 +30,7 @@ resource "helm_release" "this" {
   version          = try(var.release.version, null)
   values           = [data.http.custom_values.response_body]
 
-  timeout = 999
+  depends_on = [ kubernetes_namespace_v1.this ]
 }
 
 resource "kubernetes_manifest" "custom_ingress" {
