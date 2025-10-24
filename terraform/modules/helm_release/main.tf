@@ -48,7 +48,7 @@ resource "kubernetes_manifest" "custom_ingress" {
       rules = [{
         http = {
           paths = [{
-            path     = "/"
+            path     = "/prometheus"
             pathType = "Prefix"
             backend = {
               service = {
