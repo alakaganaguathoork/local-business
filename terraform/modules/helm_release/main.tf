@@ -14,7 +14,7 @@ data "kubernetes_namespace_v1" "existing" {
 }
 
 resource "kubernetes_namespace_v1" "this" {
-  count = data.kubernetes_namespace_v1.existing.id ? 1 : 0
+  count = tobool(data.kubernetes_namespace_v1.existing.id) ? 1 : 0
 
   metadata {
     name = var.release.namespace
