@@ -1,4 +1,4 @@
-# server:
+server:
   # ingress:
     # enabled: true
     # ingressClassName: alb
