@@ -82,8 +82,8 @@ jobs:
               inputs:
                 targetType: inline
                 script: |
-                  helm uninstall local-business -n app || true
-                  kubectl delete namespace app --ignore-not-found
+                  # helm uninstall local-business -n app || true
+                  # kubectl delete namespace app --ignore-not-found
 
                   # helm upgrade --install local-business kubernetes/helm/local-business --values /helm/local-business/values.yaml
                   kubectl apply -n argocd -f $(System.DefaultWorkingDirectory)/helm/applications/application-aws.yaml
