@@ -56,20 +56,20 @@ jobs:
             #         --reuse-values \
             #         --values $(System.DefaultWorkingDirectory)/helm/helpers/argocd/argocd-custom-values-local.yaml
                   
-            # - task: Bash@3
-              # name: argocd_get_admin_password
-              # displayName: argocd get initial admin password
-              # inputs:
-                # targetType: inline
-                # script: |
-                  # EARGO_PWD=$(htpasswd -nbBC 10 "" $ARGO_ADMIN_PWD | tr -d ':\n' | sed 's/^\$2y/\$2a/') 
-# 
-                  # kubectl -n argocd patch secret argocd-secret \
-                    # --type merge \
-                    # -p "$(jq -n --arg pwd "$EARGO_PWD" --arg mtime "$(date +%FT%T%Z)" \
-                        # '{stringData: {"admin.password": $pwd, "admin.passwordMtime": $mtime}}')"
-                  # ARGOCD_ADMIN_PASS=$(kubectl -n $(namespace) get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d)
-                  # echo "##vso[task.setvariable variable=ARGOCD_ADMIN_PASS;]$ARGOCD_ADMIN_PASS"
+            - task: Bash@3
+              name: argocd_get_admin_password
+              displayName: argocd get initial admin password
+              inputs:
+                targetType: inline
+                script: |
+                  EARGO_PWD=$(htpasswd -nbBC 10 "" $(ARGO_ADMIN_PWD) | tr -d ':\n' | sed 's/^\$2y/\$2a/') 
+
+                  kubectl -n argocd patch secret argocd-secret \
+                    --type merge \
+                    -p "$(jq -n --arg pwd "$EARGO_PWD" --arg mtime "$(date +%FT%T%Z)" \
+                        '{stringData: {"admin.password": $pwd, "admin.passwordMtime": $mtime}}')"
+                  ARGOCD_ADMIN_PASS=$(kubectl -n $(namespace) get secret argocd-secret -o jsonpath="{.data.password}" | base64 -d)
+                  echo "##vso[task.setvariable variable=ARGOCD_ADMIN_PASS;]$ARGOCD_ADMIN_PASS"
               
             - task: Bash@3
               name: argocd_display_admin_password

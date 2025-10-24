@@ -34,7 +34,7 @@ resource "kubernetes_manifest" "custom_ingress" {
       annotations = {
         "kubernetes.io/ingress.class"                = "alb"
         "alb.ingress.kubernetes.io/target-type"      = "ip"
-        "alb.ingress.kubernetes.io/listen-ports"     = "[{\"HTTP\":80}, {\"HTTP\":443}]"
+        "alb.ingress.kubernetes.io/listen-ports"     = "[{\"HTTP\":80}, {\"HTTPS\":443}]"
         "alb.ingress.kubernetes.io/healthcheck-path" = "/-/healthy" # Needs to be adjusted
         # If you’re sharing one ALB across apps:
         # "alb.ingress.kubernetes.io/group.name"   = "shared-alb"
@@ -42,6 +42,7 @@ resource "kubernetes_manifest" "custom_ingress" {
       }
     }
     spec = {
+      ingressClass = "alb"
       rules = [{
         http = {
           paths = [{
