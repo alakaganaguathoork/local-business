@@ -1,5 +1,5 @@
 server:
-  name: prometheus-server
+  name: ""
   extraFlags:
     - web.enable-lifecycle 
   ingress:
