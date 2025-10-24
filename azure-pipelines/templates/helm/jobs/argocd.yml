@@ -65,6 +65,11 @@ jobs:
                   ARGO_ADMIN_PWD="admin"
                   EARGO_PWD=$(htpasswd -nbBC 10 "" "$ARGO_ADMIN_PWD" | tr -d ':\n' | sed 's/^\$2y/\$2a/') 
 
+                  echo "EARGO_PWD: $EARGO_PWD"
+
+                  kubectl -n $(namespace) patch secret argocd-secret \
+                    -p '{"data": {"admin.password": null, "admin.passwordMtime": null}}'
+
                   kubectl -n argocd patch secret argocd-secret \
                     --type merge \
                     -p "$(jq -n --arg pwd "$EARGO_PWD" --arg mtime "$(date +%FT%T%Z)" \
