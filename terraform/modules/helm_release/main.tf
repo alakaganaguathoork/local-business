@@ -33,7 +33,7 @@ resource "kubernetes_manifest" "custom_ingress" {
       namespace = "${var.release.namespace}"
       annotations = {
         "kubernetes.io/ingress.class"                  = "alb"
-        "alb.ingress.kubernetes.io/load-balancer-name" = "shared-alb"
+        # "alb.ingress.kubernetes.io/load-balancer-name" = "shared-alb"
         "alb.ingress.kubernetes.io/group.name"         = "shared-alb"
         "alb.ingress.kubernetes.io/group.order"        = "10"
         "alb.ingress.kubernetes.io/target-type"        = "ip"
