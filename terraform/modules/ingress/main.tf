@@ -96,26 +96,6 @@ resource "kubernetes_manifest" "custom_ingress" {
                   port = { number = 80 }
                 }
               }
-            },
-            {
-              path     = "/monitoring/argocd"
-              pathType = "Prefix"
-              backend = {
-                service = {
-                  name = "argocd-server"
-                  port = { number = 80 }
-                }
-              }
-            },
-            {
-              path     = "/local-business"
-              pathType = "Prefix"
-              backend = {
-                service = {
-                  name = "local-business"
-                  port = { number = 80 }
-                }
-              }
             }
           ]
         }
