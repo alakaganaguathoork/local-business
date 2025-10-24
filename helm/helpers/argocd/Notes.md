@@ -6,13 +6,19 @@
     helm upgrade --install argocd argo/argo-cd --namespace argocd --create-namespace --reuse-values --values ./argocd-custom-values-local.yaml
     ```
 
-2. Get initial password
+2. Get Ingress Hostname:
+
+   ```bash
+   kubectl get ingress argocd-server -n monitoring -o jsonpath="{.status.loadBalancer.ingress[*].hostname}" ; echo
+   ```
+
+3. Get initial password
 
     ```bash
     kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d ; echo
     ```
 
-3. Set a custom admin password:
+4. Set a custom admin password:
 
     ```bash
     ARGO_PWD='admin'

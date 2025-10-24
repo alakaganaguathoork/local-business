@@ -6,7 +6,13 @@
     helm upgrade --install grafana grafana/grafana --namespace monitoring --create-namespace --values kubernetes/helm/helpers/grafana/grafana-custom-values-local.yaml
     ```
 
-2. Add dashboards:
+2. Add Ingress Hostname:
+
+   ```bash
+   kubectl get ingress grafana -n monitoring -o jsonpath="{.status.loadBalancer.ingress[*].hostname}" ; echo
+   ```
+
+3. Add dashboards:
 
     ```bash
     kubectl create configmap local-business-dashboard \
