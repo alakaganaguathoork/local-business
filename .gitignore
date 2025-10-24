@@ -33,3 +33,6 @@ terraform/**/*.output
 # monitoring
 monitoring/**/.env
 monitoring/**/generated/
+
+# scripts
+scripts/generated-certs

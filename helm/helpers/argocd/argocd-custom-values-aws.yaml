@@ -21,12 +21,12 @@ global:
 configs:
   params:
     server.insecure: "true"
-server:
-  ingress:
-    enabled: true
-    ingressClassName: alb
-    hostname: ""
-    annotations:
+# server:
+  # ingress:
+    # enabled: true
+    # ingressClassName: alb
+    # hostname: ""
+    # annotations:
       # kubernetes.io/ingress.class: alb
       # alb.ingress.kubernetes.io/load-balancer-name: shared-alb
       # alb.ingress.kubernetes.io/group.name: shared-alb    # use group only if you want to override it or use a non-default
@@ -40,9 +40,9 @@ server:
       # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:REGION:ACCT:certificate/UUID
       # lb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:REGION:ACCT:certificate/AAA,arn:aws:acm:.../BBB # <-- for shared ingress
       # alb.ingress.kubernetes.io/ssl-redirect: "443"
-    extraRules: []
-    path: /
-    pathType: Prefix
+    # extraRules: []
+    # path: /
+    # pathType: Prefix
     # path: /
     # extraRules:
       # - http:
