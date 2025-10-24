@@ -46,9 +46,7 @@ jobs:
               inputs:
                 targetType: inline
                 script: |
-                  pwd
                   touch .sg-ids.output
-                  ls -lha .
                   VPC_ID=$(aws eks describe-cluster \
                     --name "${{ parameters.awsClusterName }}" \
                     --query 'cluster.resourcesVpcConfig.vpcId' \
@@ -60,8 +58,6 @@ jobs:
                     --query 'SecurityGroups[*].GroupId' \
                     > .sg-ids.output
                   echo "VPC ID=$VPC_ID"
-
-                  ls -lha .
 
                   mv .sg-ids.output helm/charts/local-business/
 
@@ -95,8 +91,29 @@ jobs:
               inputs:
                 targetType: inline
                 script: |
-                  sleep 5
-                  kubectl get svc -A --field-selector spec.type=LoadBalancer \
-                    -o custom-columns="NAMESPACE:.metadata.namespace,NAME:.metadata.name,ENDPOINT:.status.loadBalancer.ingress[*].ip,HOSTNAME:.status.loadBalancer.ingress[*].hostname"
+                  sleep 10
+                  kubectl get ingress -A -o json \
+                    | jq -r '
+                      def H: ["NAMESPACE","NAME","CLASS","HOST","PATH","SERVICE","PORT","ALB_GROUP","TARGET_TYPE","LISTEN_PORTS","LB_HOSTNAME"];
+                      (H | @tsv),
+                      (.items[] as $i
+                       | ($i.spec.rules[]? // [{"host":"*","http":$i.spec.defaultBackend|not}]) as $r
+                       | ($r.http.paths[]? // [{"path":"/*","backend":$i.spec.defaultBackend}] )
+                       | [
+                          $i.metadata.namespace,
+                          $i.metadata.name,
+                          ($i.spec.ingressClassName // $i.metadata.annotations["kubernetes.io/ingress.class"] // "-"),
+                          ($r.host // "*"),
+                          (.path // "/*"),
+                          (.backend.service.name // "-"),
+                          (.backend.service.port.number // .backend.service.port.name // "-"),
+                          ($i.metadata.annotations["alb.ingress.kubernetes.io/group.name"] // "-"),
+                          ($i.metadata.annotations["alb.ingress.kubernetes.io/target-type"] // "-"),
+                          ($i.metadata.annotations["alb.ingress.kubernetes.io/listen-ports"] // "-"),
+                          (($i.status.loadBalancer.ingress // []) | map(.hostname // .ip) | join(","))
+                        ] | @tsv
+                      )
+                    ' | column -t -s $'\t'
+
     workspace:
       clean: all
