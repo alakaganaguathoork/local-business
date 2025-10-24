@@ -15,6 +15,9 @@
       # backendProtocolVersion: GRPC
 
 # Auto mode
+global:
+  domain: ""
+
 configs:
   params:
     server.insecure: "true"
