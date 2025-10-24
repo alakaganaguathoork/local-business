@@ -31,23 +31,31 @@ server:
                   # name: prometheus-server
                   # port:
                     # number: 80 
-  
-    # EKS: keep persistence on gp3 (or your default SC)
+    
+    # https://docs.aws.amazon.com/eks/latest/userguide/deploy-prometheus.html
   persistentVolume:
-    enabled: true
-    size: 1Gi
-    storageClass: gp2               # EKS
+    storageClass: "gp2"
+
+alertmanager:
+  persistence:
+    storageClass: "gp2"
+
+    # EKS: keep persistence on gp3 (or your default SC)
+  # persistentVolume:
+    # enabled: true
+    # size: 1Gi
+    # storageClass: gp2               # EKS
   
     # Make /data writable for Prometheus (non-root UID 65534)
-  podSecurityContext:
-    runAsUser: 65534
-    runAsGroup: 65534
-    fsGroup: 65534
-    fsGroupChangePolicy: OnRootMismatch
+  # podSecurityContext:
+    # # runAsUser: 65534
+    # runAsGroup: 65534
+    # fsGroup: 65534
+    # fsGroupChangePolicy: OnRootMismatch
  
-  securityContext:
-    runAsNonRoot: true
-    allowPrivilegeEscalation: false
+  # securityContext:
+    # runAsNonRoot: true
+    # allowPrivilegeEscalation: false
 
     # Some drivers ignore fsGroup; ensure ownership once at startup
   # extraInitContainers:
