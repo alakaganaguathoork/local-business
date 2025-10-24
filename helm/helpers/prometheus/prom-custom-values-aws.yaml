@@ -1,7 +1,4 @@
 server:
-  name: ""
-  extraFlags:
-    - web.enable-lifecycle 
   ingress:
     enabled: true
     ingressClassName: alb
@@ -36,33 +33,33 @@ server:
                     # number: 80 
   
     # EKS: keep persistence on gp3 (or your default SC)
-  persistentVolume:
-    enabled: true
-    size: 8Gi
-    storageClass: gp3               # EKS
+  # persistentVolume:
+    # enabled: true
+    # size: 8Gi
+    # storageClass: gp3               # EKS
   
     # Make /data writable for Prometheus (non-root UID 65534)
-  podSecurityContext:
-    runAsUser: 65534
-    runAsGroup: 65534
-    fsGroup: 65534
-    fsGroupChangePolicy: OnRootMismatch
+  # podSecurityContext:
+    # runAsUser: 65534
+    # runAsGroup: 65534
+    # fsGroup: 65534
+    # fsGroupChangePolicy: OnRootMismatch
 
-  securityContext:
-    runAsNonRoot: true
-    allowPrivilegeEscalation: false
+  # securityContext:
+    # runAsNonRoot: true
+    # allowPrivilegeEscalation: false
 
     # Some drivers ignore fsGroup; ensure ownership once at startup
-  extraInitContainers:
-    - name: fix-perms
-      image: busybox:1.36
-      command: ["sh","-c","chown -R 65534:65534 /data || true; chmod -R g+rwX /data || true"]
-      securityContext:
-        runAsUser: 0
-        runAsGroup: 0
-      volumeMounts:
-        - name: storage-volume
-          mountPath: /data
+  # extraInitContainers:
+    # - name: fix-perms
+      # image: busybox:1.36
+      # command: ["sh","-c","chown -R 65534:65534 /data || true; chmod -R g+rwX /data || true"]
+      # securityContext:
+        # runAsUser: 0
+        # runAsGroup: 0
+      # volumeMounts:
+        # - name: storage-volume
+          # mountPath: /data
   
 serverFiles:
   alerting_rules.yml:
@@ -87,6 +84,7 @@ extraScrapeConfigs: |
       - role: pod
         namespaces:
           names: ["app"]
+          
     relabel_configs:
       # keep only pods with label app.kubernetes.io/name=local-business
       - action: keep
