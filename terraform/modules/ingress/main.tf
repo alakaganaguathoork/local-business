@@ -1,10 +1,10 @@
-resource "kubernetes_manifest" "shared_ingress_params" {
+resource "kubernetes_manifest" "alb" {
   manifest = {
     apiVersion = "eks.amazonaws.com/v1"
     kind       = "IngressClassParams"
 
     metadata = {
-      name = "shared-ingress"
+      name = "alb"
     }
 
     spec = {
@@ -12,9 +12,10 @@ resource "kubernetes_manifest" "shared_ingress_params" {
       scheme        = "internet-facing" # or "internal"
       subnets       = { ids = var.subnet_ids }
       ipAddressType = "ipv4"
+      target-type   = "ip"
 
       group = {
-        "name" = "shared-group"
+        "name" = "shared-alb"
       }
 
       # Optional: ACM certs for HTTPS
@@ -36,11 +37,11 @@ resource "kubernetes_manifest" "shared_ingress_params" {
 }
 
 # IngressClass that tells K8s to use EKS Auto Mode’s ALB controller
-resource "kubernetes_ingress_class_v1" "shared_ingress" {
+resource "kubernetes_ingress_class_v1" "alb" {
   metadata {
-    name = "shared-ingress"
+    name = "alb"
     annotations = {
-      "alb.ingress.kubernetes.io/group.name" = "shared-group"
+      "alb.ingress.kubernetes.io/group.name" = "shared-alb"
     }
   }
   spec {
@@ -49,61 +50,9 @@ resource "kubernetes_ingress_class_v1" "shared_ingress" {
     parameters {
       api_group = "eks.amazonaws.com"
       kind      = "IngressClassParams"
-      name      = kubernetes_manifest.shared_ingress_params.object.metadata.name
+      name      = kubernetes_manifest.alb.object.metadata.name
     }
   }
-}
-
-resource "kubernetes_manifest" "custom_ingress" {
-  manifest = {
-    apiVersion = "networking.k8s.io/v1"
-    kind       = "Ingress"
-    metadata = {
-      name      = "shared"
-      namespace = "monitoring"
-      annotations = {
-        # "kubernetes.io/ingress.class"                  = "alb"
-        # "alb.ingress.kubernetes.io/load-balancer-name" = "shared-alb"
-        # "alb.ingress.kubernetes.io/group.name"         = "shared-alb"
-        # "alb.ingress.kubernetes.io/group.order"        = "10"
-        # "alb.ingress.kubernetes.io/target-type"        = "ip"
-        # "alb.ingress.kubernetes.io/listen-ports"       = "[{\"HTTP\":80},{\"HTTPS\":443}]"
-        # "alb.ingress.kubernetes.io/healthcheck-path"   = "/-/healthy"
-        # "alb.ingress.kubernetes.io/certificate-arn"    = "arn:aws:acm:us-east-1:838062310110:certificate/e002b877-ce84-4af4-b696-48853ef46739"
-      }
-    }
-    spec = {
-      ingressClassName = "shared-ingress"
-      rules = [{
-        http = {
-          paths = [
-            {
-              path     = "/monitoring/grafana"
-              pathType = "Prefix"
-              backend = {
-                service = {
-                  name = "grafana"
-                  port = { number = 80 }
-                }
-              }
-            },
-            {
-              path     = "/monitoring/prometheus"
-              pathType = "Prefix"
-              backend = {
-                service = {
-                  name = "prometheus-server"
-                  port = { number = 80 }
-                }
-              }
-            }
-          ]
-        }
-      }]
-    }
-  }
-
-  depends_on = [kubernetes_ingress_class_v1.shared_ingress]
 }
 
 resource "kubernetes_storage_class_v1" "gp3" {
