@@ -12,7 +12,6 @@ resource "kubernetes_manifest" "alb" {
       scheme        = "internet-facing" # or "internal"
       subnets       = { ids = var.subnet_ids }
       ipAddressType = "ipv4"
-      target-type   = "ip"
 
       group = {
         "name" = "shared-alb"
