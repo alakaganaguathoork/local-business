@@ -64,5 +64,5 @@ resource "kubernetes_manifest" "prom_ingress" {
     }
   }
 
-  depends_on = [kubernetes_ingress_class_v1.shared_ingress]
+  depends_on = [helm_release.this]
 }
