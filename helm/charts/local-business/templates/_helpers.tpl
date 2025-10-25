@@ -42,8 +42,10 @@ service.beta.kubernetes.io/aws-load-balancer-security-groups: "{{ join "," $item
 kubernetes.io/ingress.class: nginx
 {{- else if and .Values.ingress (eq .Values.environment "aws") -}}
 kubernetes.io/ingress.class: alb
-alb.ingress.kubernetes.io/scheme: internet-facing
-alb.ingress.kubernetes.io/target-type: ip
+alb.ingress.kubernetes.io/group.name: shared-alb
+alb.ingress.kubernetes.io/group.order: "10"
+# alb.ingress.kubernetes.io/scheme: internet-facing
+# alb.ingress.kubernetes.io/target-type: ip
 alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
 alb.ingress.kubernetes.io/healthcheck-path: /health
 {{- end -}}
