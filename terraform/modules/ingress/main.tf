@@ -1,10 +1,10 @@
-resource "kubernetes_manifest" "alb_params" {
+resource "kubernetes_manifest" "shared_ingress_params" {
   manifest = {
     apiVersion = "eks.amazonaws.com/v1"
     kind       = "IngressClassParams"
 
     metadata = {
-      name = "shared-alb"
+      name = "shared-ingress"
     }
 
     spec = {
@@ -14,7 +14,7 @@ resource "kubernetes_manifest" "alb_params" {
       ipAddressType = "ipv4"
 
       group = {
-        "name" = "shared-alb"
+        "name" = "shared-group"
       }
 
       # Optional: ACM certs for HTTPS
@@ -36,11 +36,11 @@ resource "kubernetes_manifest" "alb_params" {
 }
 
 # IngressClass that tells K8s to use EKS Auto Mode’s ALB controller
-resource "kubernetes_ingress_class_v1" "alb" {
+resource "kubernetes_ingress_class_v1" "shared_ingress" {
   metadata {
-    name = "alb"
+    name = "shared-ingress"
     annotations = {
-      "alb.ingress.kubernetes.io/group.name" = "shared-alb"
+      "alb.ingress.kubernetes.io/group.name" = "shared-group"
     }
   }
   spec {
@@ -49,7 +49,7 @@ resource "kubernetes_ingress_class_v1" "alb" {
     parameters {
       api_group = "eks.amazonaws.com"
       kind      = "IngressClassParams"
-      name      = kubernetes_manifest.alb_params.object.metadata.name
+      name      = kubernetes_manifest.shared_ingress_params.object.metadata.name
     }
   }
 }
@@ -73,7 +73,7 @@ resource "kubernetes_manifest" "custom_ingress" {
       }
     }
     spec = {
-      ingressClassName = "alb"
+      ingressClassName = "shared-ingress"
       rules = [{
         http = {
           paths = [
@@ -102,6 +102,8 @@ resource "kubernetes_manifest" "custom_ingress" {
       }]
     }
   }
+
+  depends_on = [kubernetes_ingress_class_v1.shared_ingress]
 }
 
 resource "kubernetes_storage_class_v1" "gp3" {
