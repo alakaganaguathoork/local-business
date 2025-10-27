@@ -3,13 +3,13 @@ variable "region" {
 }
 
 variable "generate_new_certificate" {
-  type        = optional(bool)
+  type        = bool
   default     = true
   description = "If false, you should provide your own externally generated certificate. Default is `true`."
 }
 
 variable "private_key_algorithm_ca" {
-  type        = optinal(string)
+  type        = string
   default     = "RSA"
   description = "Algorithm to use to generate a CA private key"
 
@@ -21,11 +21,12 @@ variable "private_key_algorithm_ca" {
 }
 
 variable "self_signed_cert_subject_ca" {
-  type = optinal(object({
+  type = object({
     common_name  = string
     organization = string
     country      = string
-  }))
+  })
+  default = {}
 }
 
 variable "private_key_algorithm_cert_request" {
@@ -41,7 +42,7 @@ variable "private_key_algorithm_cert_request" {
 }
 
 variable "dns_names" {
-  type = optinal(list(string))
+  type    = optinal(list(string))
   default = []
 }
 
