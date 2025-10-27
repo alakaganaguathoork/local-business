@@ -32,18 +32,18 @@ resource "kubernetes_manifest" "prom_ingress" {
       name      = "monitoring"
       namespace = "monitoring"
       annotations = {
-        "kubernetes.io/ingress.class"                = "alb"
-        "alb.ingress.kubernetes.io/group.name"       = "shared-alb"
-        "alb.ingress.kubernetes.io/group.order"      = "40"
-        "alb.ingress.kubernetes.io/scheme"           = "internet-facing"
-        "alb.ingress.kubernetes.io/target-type"      = "ip"
+        "kubernetes.io/ingress.class"           = "alb"
+        "alb.ingress.kubernetes.io/group.name"  = "shared-alb"
+        "alb.ingress.kubernetes.io/group.order" = "40"
+        "alb.ingress.kubernetes.io/scheme"      = "internet-facing"
+        "alb.ingress.kubernetes.io/target-type" = "ip"
 
         "alb.ingress.kubernetes.io/healthcheck-path" = "/"
         "alb.ingress.kubernetes.io/success-codes"    = "200,302" # Prometheus:200, Grafana:302 (login redirect)
-        
-        "alb.ingress.kubernetes.io/listen-ports"     = "[{\"HTTP\":80},{\"HTTPS\":443}]"
-        "alb.ingress.kubernetes.io/ssl-redirect"     = "443"
-        "alb.ingress.kubernetes.io/inbound-cidrs"    = "91.198.233.56/32"
+
+        "alb.ingress.kubernetes.io/listen-ports"  = "[{\"HTTP\":80},{\"HTTPS\":443}]"
+        "alb.ingress.kubernetes.io/ssl-redirect"  = "443"
+        "alb.ingress.kubernetes.io/inbound-cidrs" = "91.198.233.56/32"
 
         # "alb.ingress.kubernetes.io/healthcheck-path"   = "/-/healthy" #works for prometheus only
       }
@@ -75,6 +75,21 @@ resource "kubernetes_manifest" "prom_ingress" {
               backend = {
                 service = {
                   name = "grafana"
+                  port = { number = 80 }
+                }
+              }
+            }]
+          }
+        },
+        {
+          host = "loki.mishap.local"
+          http = {
+            paths = [{
+              path     = "/"
+              pathType = "Prefix"
+              backend = {
+                service = {
+                  name = "loki"
                   port = { number = 80 }
                 }
               }

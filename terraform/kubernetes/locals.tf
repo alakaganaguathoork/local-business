@@ -26,5 +26,12 @@ locals {
       repository      = "https://grafana.github.io/helm-charts"
       chart           = "grafana"
     }
+    grafana = {
+      values_file_url = "https://raw.githubusercontent.com/alakaganaguathoork/local-business/refs/heads/main/helm/helpers/loki/loki-custom-values-aws.yaml"
+      name            = "loki"
+      namespace       = "monitoring"
+      repository      = "https://grafana.github.io/helm-charts"
+      chart           = "loki"
+    }
   }
 }
