@@ -23,7 +23,7 @@ ingress:
 
   hosts: []
   extraPaths:
-    - path: /
+    - path: /grafana
       pathType: Prefix
       backend:
         service:
