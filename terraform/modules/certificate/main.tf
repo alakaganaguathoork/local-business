@@ -1,12 +1,12 @@
 resource "null_resource" "gen_wildcard" {
   count = !var.generate_new_certificate ? 1 : 0
-  triggers = {
-    script_sha = filesha256("${path.module}/scripts/make-wildcard.sh")
+  # triggers = {
+    # script_sha = filesha256("${path.module}/scripts/genererate-tls-cert.sh")
     # rotate_at  = ""
-  }
+  # }
 
   provisioner "local-exec" {
-    command = "${path.root}/scripts/generate-certs.sh"
+    command = "${path.root}/scripts/generate-tls-cert.sh"
   }
 }
 
