@@ -26,14 +26,16 @@ dashboardProviders:
         editable: true
         options:
           path: /var/lib/grafana/dashboards/default
-          
+
 dashboards:
   default:
     local-business:
       url: https://raw.githubusercontent.com/alakaganaguathoork/local-business/refs/heads/main/monitoring/grafana/dashboards/main.json
       curlOptions: "-sLf"
       token: ""
+      datasource: Prometheus
 
+# Should be enabled in order to load dashboards from ConfigMap
 sidecar:
   dashboards:
     enabled: true
