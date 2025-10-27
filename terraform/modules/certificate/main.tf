@@ -1,22 +1,15 @@
-resource "null_resource" "gen_wildcard" {
-  count = !var.generate_new_certificate ? 1 : 0
-  # triggers = {
-    # script_sha = filesha256("${path.module}/scripts/genererate-tls-cert.sh")
-    # rotate_at  = ""
-  # }
-
-  provisioner "local-exec" {
-    command = "${path.root}/scripts/generate-tls-cert.sh"
-  }
-}
-
 # providers
 terraform {
   required_providers {
     tls = { source = "hashicorp/tls" }
   }
 }
+
 provider "aws" { region = var.region }
+
+data "external" "cert" {
+  program = ["bash", "-lc", "${path.module}/scripts/generate-cert.sh"]
+}
 
 # --- CA ---
 resource "tls_private_key" "ca" {
@@ -29,7 +22,7 @@ resource "tls_private_key" "ca" {
 resource "tls_self_signed_cert" "ca" {
   count = var.generate_new_certificate ? 1 : 0
 
-  private_key_pem       = tls_private_key.ca.private_key_pem
+  private_key_pem       = tls_private_key.ca[count.index].private_key_pem
   is_ca_certificate     = true
   validity_period_hours = 3650 * 24
 
@@ -47,31 +40,29 @@ resource "tls_self_signed_cert" "ca" {
 }
 
 # --- Wildcard leaf signed by our CA ---
-resource "tls_private_key" "wildcard" {
+resource "tls_private_key" "leaf" {
   count = var.generate_new_certificate ? 1 : 0
 
   algorithm = var.private_key_algorithm_cert_request
   rsa_bits  = 2048
 }
 
-resource "tls_cert_request" "wildcard" {
+resource "tls_cert_request" "leaf" {
   count = var.generate_new_certificate ? 1 : 0
 
-  private_key_pem = tls_private_key.wildcard.private_key_pem
-  # subject {
-  # common_name  = "*.mishap.local" # any test name is fine
-  # organization = "alakaganaguathoork"
-  # country      = "UA"
-  # }
+  private_key_pem = tls_private_key.leaf[count.index].private_key_pem
+  subject {
+    common_name = var.dns_names[0] # any test name is fine
+  }
   dns_names = var.dns_names
 }
 
-resource "tls_locally_signed_cert" "wildcard" {
+resource "tls_locally_signed_cert" "leaf" {
   count = var.generate_new_certificate ? 1 : 0
 
-  cert_request_pem      = tls_cert_request.wildcard.cert_request_pem
-  ca_private_key_pem    = tls_private_key.ca.private_key_pem
-  ca_cert_pem           = tls_self_signed_cert.ca.cert_pem
+  cert_request_pem      = tls_cert_request.leaf[count.index].cert_request_pem
+  ca_private_key_pem    = tls_private_key.ca[count.index].private_key_pem
+  ca_cert_pem           = tls_self_signed_cert[count.index].ca.cert_pem
   validity_period_hours = 397 * 24
 
   allowed_uses = ["server_auth", "client_auth", "digital_signature", "key_encipherment"]
@@ -80,32 +71,29 @@ resource "tls_locally_signed_cert" "wildcard" {
 ###
 ## Import to ACM
 ###
-resource "aws_acm_certificate" "self" {
-  count = !var.generate_new_certificate ? 1 : 0
-
-  private_key      = file("${path.module}/scripts/generated-certs/private/ca.key")
-  certificate_body = file("${path.module}/scripts/generated-certs/certs/all.crt")
-
-  depends_on = [null_resource.gen_wildcard]
+resource "aws_acm_certificate" "imported" {
+  count             = var.generate_new_certificate ? 0 : 1
+  private_key       = base64decode(data.external.cert[0].result.private_key_b64)
+  certificate_body  = base64decode(data.external.cert[0].result.certificate_b64)
+  certificate_chain = base64decode(try(data.external.cert[0].result.chain_b64, ""))
 }
 
 # --- Import leaf into ACM (same region/account as your ALB) ---
-resource "aws_acm_certificate" "wildcard" {
+resource "aws_acm_certificate" "generatd" {
   count = var.generate_new_certificate ? 1 : 0
 
-  private_key      = tls_private_key.wildcard.private_key_pem
-  certificate_body = tls_locally_signed_cert.wildcard.cert_pem
+  private_key       = tls_private_key.leaf[count.index].private_key_pem
+  certificate_body  = tls_locally_signed_cert[count.index].leaf.cert_pem
+  certificate_chain = tls_self_signed_cert.ca[count.index].cert_pem
 
   lifecycle {
     create_before_destroy = true
   }
 }
 
-output "acm_self_arn" {
-  value = aws_acm_certificate.self.arn
-}
-
-
-output "acm_wildcard_arn" {
-  value = aws_acm_certificate.wildcard.arn
+output "arn" {
+  value = coalesce(
+    try(aws_acm_certificate.generated[0].arn, null),
+    try(aws_acm_certificate.imported[0].arn, null)
+  )
 }
