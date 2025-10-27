@@ -1,8 +1,8 @@
 adminPassword: admin
 
 env:
-  GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s/grafana"
-  GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+  GF_SERVER_ROOT_URL: "https://grafana.mishap.local"
+  GF_SERVER_SERVE_FROM_SUB_PATH: "false"
 
 # ingress:
   # enabled: true
