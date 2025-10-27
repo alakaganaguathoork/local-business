@@ -31,8 +31,8 @@ server:
       alb.ingress.kubernetes.io/load-balancer-name: alb
       alb.ingress.kubernetes.io/group.name: shared-alb    # use group only if you want to override it or use a non-default
       alb.ingress.kubernetes.io/group.order: "20"
-      # alb.ingress.kubernetes.io/scheme: internet-facing
-      # alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
       # alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
       alb.ingress.kubernetes.io/healthcheck-path: /healthz
 
