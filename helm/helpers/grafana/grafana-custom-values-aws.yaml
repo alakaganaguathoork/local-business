@@ -15,7 +15,7 @@ datasources:
         isDefault: true
 
 dashboards:
-  defaultMode:
+  default:
    local-business:
     url: https://raw.githubusercontent.com/alakaganaguathoork/local-business/refs/heads/main/monitoring/grafana/dashboards/main.json
     curlOptions: "-sLf"
