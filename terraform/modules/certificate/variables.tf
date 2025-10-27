@@ -30,7 +30,7 @@ variable "self_signed_cert_subject_ca" {
 }
 
 variable "private_key_algorithm_cert_request" {
-  type        = optional(string)
+  type        = string
   default     = "RSA"
   description = "Algorithm to use to generate a wildcard private key"
 
@@ -42,7 +42,7 @@ variable "private_key_algorithm_cert_request" {
 }
 
 variable "dns_names" {
-  type    = optinal(list(string))
+  type    = list(string)
   default = []
 }
 
