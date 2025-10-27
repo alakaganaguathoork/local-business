@@ -8,7 +8,6 @@ resource "kubernetes_manifest" "alb" {
     }
 
     spec = {
-      # Required/commonly used
       scheme        = "internet-facing" # or "internal"
       subnets       = { ids = var.subnet_ids }
       ipAddressType = "ipv4"
@@ -17,20 +16,7 @@ resource "kubernetes_manifest" "alb" {
         "name" = "shared-alb"
       }
 
-      # Optional: ACM certs for HTTPS
-      certificateARNs = [
-        "arn:aws:acm:us-east-1:838062310110:certificate/e002b877-ce84-4af4-b696-48853ef46739"
-      ]
-
-      # Optional: extra AWS tags on created resources (LIST of {key,value})
-      # tags = [
-      # { key = "App", value = "argocd" }
-      # ]
-
-      # Optional: ALB attributes (LIST of {key,value})
-      # loadBalancerAttributes = [
-      #   { key = "idle_timeout.timeout_seconds", value = "60" }
-      # ]
+      certificateARNs = [var.tls_certificate_arn]
     }
   }
 }

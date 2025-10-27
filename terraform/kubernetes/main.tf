@@ -35,6 +35,7 @@ module "ingress" {
   source = "../modules/ingress"
 
   subnet_ids = data.aws_subnets.public.ids
+  tls_certificate_arn = module.tls_certificate.arn
 }
 
 ###

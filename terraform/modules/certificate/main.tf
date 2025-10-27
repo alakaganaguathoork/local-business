@@ -8,6 +8,7 @@ terraform {
 provider "aws" { region = var.region }
 
 data "external" "cert" {
+  count = var.generate_new_certificate ? 0 : 1
   program = ["bash", "-lc", "${path.module}/scripts/generate-cert.sh"]
 }
 
@@ -62,7 +63,7 @@ resource "tls_locally_signed_cert" "leaf" {
 
   cert_request_pem      = tls_cert_request.leaf[count.index].cert_request_pem
   ca_private_key_pem    = tls_private_key.ca[count.index].private_key_pem
-  ca_cert_pem           = tls_self_signed_cert[count.index].ca.cert_pem
+  ca_cert_pem           = tls_self_signed_cert.ca[count.index].cert_pem
   validity_period_hours = 397 * 24
 
   allowed_uses = ["server_auth", "client_auth", "digital_signature", "key_encipherment"]
@@ -83,7 +84,7 @@ resource "aws_acm_certificate" "generatd" {
   count = var.generate_new_certificate ? 1 : 0
 
   private_key       = tls_private_key.leaf[count.index].private_key_pem
-  certificate_body  = tls_locally_signed_cert[count.index].leaf.cert_pem
+  certificate_body  = tls_locally_signed_cert.leaf[count.index].cert_pem
   certificate_chain = tls_self_signed_cert.ca[count.index].cert_pem
 
   lifecycle {
