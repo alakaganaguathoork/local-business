@@ -10,6 +10,6 @@ datasources:
     datasources:
       - name: Prometheus
         type: prometheus
-        url: https://prometheus.mishap.local
+        url: http://prometheus-server.monitoring.svc.cluster.local
         access: proxy
         isDefault: true
