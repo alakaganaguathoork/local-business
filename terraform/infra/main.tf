@@ -36,9 +36,9 @@ resource "aws_subnet" "subnet" {
   availability_zone       = element(data.aws_availability_zones.available.names, count.index)
 
   tags = {
-    "kubernetes.io/role/elb"                    = "1"
+    "kubernetes.io/role/elb"                      = "1"
     "kubernetes.io/cluster/${local.cluster.name}" = "owned"
-    "Name" = "public-subnet-${local.cluster.name}"
+    "Name"                                        = "public-subnet-${local.cluster.name}"
   }
 }
 
@@ -125,48 +125,48 @@ resource "aws_iam_role" "cluster" {
 }
 
 # resource "aws_iam_policy" "cluster_lb" {
-  # name        = "eks-cluster-lb"
-  # description = "Permissions for EKS cluster to manage Load Balancers"
+# name        = "eks-cluster-lb"
+# description = "Permissions for EKS cluster to manage Load Balancers"
 #  
-  # policy = jsonencode({
-    # Version = "2012-10-17"
-    # Statement = [
-      # {
-        # Sid    = "LoadBalancer"
-        # Effect = "Allow"
-        # Action = [
-          # "elasticloadbalancing:CreateLoadBalancer",
-          # "elasticloadbalancing:CreateTargetGroup",
-          # "elasticloadbalancing:CreateListener",
-          # "elasticloadbalancing:CreateRule",
-          # "elasticloadbalancing:DeleteLoadBalancer",
-          # "elasticloadbalancing:DeleteTargetGroup",
-          # "elasticloadbalancing:DeleteListener",
-          # "elasticloadbalancing:DeleteRule",
-          # "elasticloadbalancing:Modify*",
-          # "elasticloadbalancing:Describe*",
-          # "ec2:CreateSecurityGroup",
-          # "ec2:DeleteSecurityGroup",
-          # "ec2:AuthorizeSecurityGroupIngress",
-          # "ec2:RevokeSecurityGroupIngress",
-          # "ec2:AuthorizeSecurityGroupEgress",
-          # "ec2:RevokeSecurityGroupEgress",
-          # "ec2:Describe*"
-        # ]
-        # Resource = "*"
-        # Condition = {
-          # StringEquals = {
-            # "aws:RequestTag/eks:eks-cluster-name" = "$${aws:PrincipalTag/eks:eks-cluster-name}"
-          # }
-        # }
-      # }
-    # ]
-  # })
+# policy = jsonencode({
+# Version = "2012-10-17"
+# Statement = [
+# {
+# Sid    = "LoadBalancer"
+# Effect = "Allow"
+# Action = [
+# "elasticloadbalancing:CreateLoadBalancer",
+# "elasticloadbalancing:CreateTargetGroup",
+# "elasticloadbalancing:CreateListener",
+# "elasticloadbalancing:CreateRule",
+# "elasticloadbalancing:DeleteLoadBalancer",
+# "elasticloadbalancing:DeleteTargetGroup",
+# "elasticloadbalancing:DeleteListener",
+# "elasticloadbalancing:DeleteRule",
+# "elasticloadbalancing:Modify*",
+# "elasticloadbalancing:Describe*",
+# "ec2:CreateSecurityGroup",
+# "ec2:DeleteSecurityGroup",
+# "ec2:AuthorizeSecurityGroupIngress",
+# "ec2:RevokeSecurityGroupIngress",
+# "ec2:AuthorizeSecurityGroupEgress",
+# "ec2:RevokeSecurityGroupEgress",
+# "ec2:Describe*"
+# ]
+# Resource = "*"
+# Condition = {
+# StringEquals = {
+# "aws:RequestTag/eks:eks-cluster-name" = "$${aws:PrincipalTag/eks:eks-cluster-name}"
+# }
+# }
+# }
+# ]
+# })
 # }
 #
 # resource "aws_iam_role_policy_attachment" "cluster_lb_attach" {
-  # policy_arn = aws_iam_policy.cluster_lb.arn
-  # role       = aws_iam_role.cluster.name
+# policy_arn = aws_iam_policy.cluster_lb.arn
+# role       = aws_iam_role.cluster.name
 # }
 
 resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSClusterPolicy" {
@@ -203,7 +203,7 @@ resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSServicePolicy" {
 ## Cluster
 ###
 resource "aws_eks_cluster" "main" {
-  name   = local.cluster.name
+  name = local.cluster.name
 
   access_config {
     authentication_mode = "API"

@@ -29,6 +29,7 @@ terraform/**/*.lock.hcl
 terraform/**/*tfplan*
 terraform/**/*.output
 !terraform/**/.terraformignore
+terraform/**/generated-certs/
 
 # monitoring
 monitoring/**/.env

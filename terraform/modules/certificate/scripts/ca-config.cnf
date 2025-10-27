@@ -1,0 +1,18 @@
+[ req ]
+distinguished_name = mishap.devops.ina
+x509_extensions = v3_ca
+prompt = no
+
+[ mishap.devops.ina ]
+C = UA
+ST = Kyiv
+L = Kyiv
+O = MishaP
+OU = DevOps
+CN = RootCA
+
+[ v3_ca ]
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
+basicConstraints = critical,CA:true
+keyUsage = critical, digitalSignature, cRLSign, keyCertSign
