@@ -32,15 +32,18 @@ resource "kubernetes_manifest" "prom_ingress" {
       name      = "prometheus"
       namespace = "monitoring"
       annotations = {
-        "kubernetes.io/ingress.class"                  = "alb"
-        "alb.ingress.kubernetes.io/load-balancer-name" = "shared-alb"
-        "alb.ingress.kubernetes.io/group.name"         = "shared-alb"
-        "alb.ingress.kubernetes.io/group.order"        = "40"
-        "alb.ingress.kubernetes.io/healthcheck-path"   = "/healthz"
-        "alb.ingress.kubernetes.io/target-type"        = "ip"
-        "alb.ingress.kubernetes.io/listen-ports"       = "[{\"HTTP\":80},{\"HTTPS\":443}]"
-        # "alb.ingress.kubernetes.io/healthcheck-path"   = "/-/healthy"
-        # "alb.ingress.kubernetes.io/certificate-arn"    = "arn:aws:acm:us-east-1:838062310110:certificate/e002b877-ce84-4af4-b696-48853ef46739"
+        "kubernetes.io/ingress.class" = "alb"
+        "alb.ingress.kubernetes.io/group.name"       = "shared-alb"
+        "alb.ingress.kubernetes.io/group.order"      = "40"
+        "alb.ingress.kubernetes.io/scheme"           = "internet-facing"
+        "alb.ingress.kubernetes.io/target-type"      = "ip"
+        "alb.ingress.kubernetes.io/healthcheck-path" = "/"
+        "alb.ingress.kubernetes.io/success-codes"    = "200,302" # Prometheus:200, Grafana:302 (login redirect)
+        "alb.ingress.kubernetes.io/listen-ports"     = "[{\"HTTP\":80},{\"HTTPS\":443}]"
+        "alb.ingress.kubernetes.io/ssl-redirect"     = "443"
+        "alb.ingress.kubernetes.io/inbound-cidrs"    = "91.198.233.56/32"
+
+        # "alb.ingress.kubernetes.io/healthcheck-path"   = "/-/healthy" #works for prometheus only
       }
     }
     spec = {

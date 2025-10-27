@@ -1,23 +1,26 @@
 adminPassword: admin
 
-ingress:
-  enabled: true
-  ingressClassName: alb
-  annotations:
-    kubernetes.io/ingress.class: alb
-    alb.ingress.kubernetes.io/load-balancer-name: shared-alb
-    alb.ingress.kubernetes.io/group.name: shared-alb
-    alb.ingress.kubernetes.io/group.order: "30"
-    alb.ingress.kubernetes.io/scheme: internet-facing
-    alb.ingress.kubernetes.io/target-type: ip
+env:
+  GF_SERVER_ROOT_URL: "%(protocol)s://%(domain)s/grafana"
+  GF_SERVER_SERVE_FROM_SUB_PATH: "true"
+
+# ingress:
+  # enabled: true
+  # ingressClassName: alb
+  # annotations:
+    # kubernetes.io/ingress.class: alb
+    # alb.ingress.kubernetes.io/group.name: shared-alb
+    # alb.ingress.kubernetes.io/group.order: "30"
+    # alb.ingress.kubernetes.io/scheme: internet-facing
+    # alb.ingress.kubernetes.io/target-type: ip
     # alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}'
-    alb.ingress.kubernetes.io/healthcheck-path: /api/health
+    # alb.ingress.kubernetes.io/healthcheck-path: /api/health
     # Optional: restrict who can reach it
-    alb.ingress.kubernetes.io/inbound-cidrs: 91.198.233.56/32
+    # alb.ingress.kubernetes.io/inbound-cidrs: 91.198.233.56/32
     
     # For HTTPS
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":80},{"HTTPS":443}]'
-    alb.ingress.kubernetes.io/ssl-redirect: "443"
+    # alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":80},{"HTTPS":443}]'
+    # alb.ingress.kubernetes.io/ssl-redirect: "443"
     # Cert added to ALB
     # alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:838062310110:certificate/e002b877-ce84-4af4-b696-48853ef46739"
 
