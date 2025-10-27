@@ -74,13 +74,13 @@ resource "tls_locally_signed_cert" "leaf" {
 ###
 resource "aws_acm_certificate" "imported" {
   count             = var.generate_new_certificate ? 0 : 1
+
   private_key       = base64decode(data.external.cert[0].result.private_key_b64)
   certificate_body  = base64decode(data.external.cert[0].result.certificate_b64)
   certificate_chain = base64decode(try(data.external.cert[0].result.chain_b64, ""))
 }
 
-# --- Import leaf into ACM (same region/account as your ALB) ---
-resource "aws_acm_certificate" "generatd" {
+resource "aws_acm_certificate" "generated" {
   count = var.generate_new_certificate ? 1 : 0
 
   private_key       = tls_private_key.leaf[count.index].private_key_pem
