@@ -25,7 +25,7 @@ server:
   ingress:
     enabled: true
     ingressClassName: alb
-    hostname: ""
+    hostname: "argocd.mishap.local"
     annotations:
       kubernetes.io/ingress.class: alb
       alb.ingress.kubernetes.io/load-balancer-name: alb
@@ -43,16 +43,16 @@ server:
       # alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:REGION:ACCT:certificate/UUID
       # lb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:REGION:ACCT:certificate/AAA,arn:aws:acm:.../BBB # <-- for shared ingress
     # extraRules: []
+    path: /
+    pathType: Prefix
     # path: /
-    # pathType: Prefix
-    # path: /
-    extraRules:
-      - http:
-          paths:
-            - path: /argocd
-              pathType: Prefix
-              backend:
-                service:
-                  name: argocd-server
-                  port:
-                    number: 80
+    # extraRules:
+      # - http:
+          # paths:
+            # - path: /
+              # pathType: Prefix
+              # backend:
+                # service:
+                  # name: argocd-server
+                  # port:
+                    # number: 80

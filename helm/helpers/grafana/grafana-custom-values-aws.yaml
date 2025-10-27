@@ -24,12 +24,12 @@ env:
     # Cert added to ALB
     # alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:us-east-1:838062310110:certificate/e002b877-ce84-4af4-b696-48853ef46739"
 
-  hosts: []
-  extraPaths:
-    - path: /grafana
-      pathType: Prefix
-      backend:
-        service:
-          name: grafana
-          port:
-            number: 80
+  # hosts: []
+  # extraPaths:
+    # - path: /
+      # pathType: Prefix
+      # backend:
+        # service:
+          # name: grafana
+          # port:
+            # number: 80

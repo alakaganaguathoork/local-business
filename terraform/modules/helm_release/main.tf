@@ -29,16 +29,18 @@ resource "kubernetes_manifest" "prom_ingress" {
     apiVersion = "networking.k8s.io/v1"
     kind       = "Ingress"
     metadata = {
-      name      = "prometheus"
+      name      = "monitoring"
       namespace = "monitoring"
       annotations = {
-        "kubernetes.io/ingress.class" = "alb"
+        "kubernetes.io/ingress.class"                = "alb"
         "alb.ingress.kubernetes.io/group.name"       = "shared-alb"
         "alb.ingress.kubernetes.io/group.order"      = "40"
         "alb.ingress.kubernetes.io/scheme"           = "internet-facing"
         "alb.ingress.kubernetes.io/target-type"      = "ip"
+
         "alb.ingress.kubernetes.io/healthcheck-path" = "/"
         "alb.ingress.kubernetes.io/success-codes"    = "200,302" # Prometheus:200, Grafana:302 (login redirect)
+        
         "alb.ingress.kubernetes.io/listen-ports"     = "[{\"HTTP\":80},{\"HTTPS\":443}]"
         "alb.ingress.kubernetes.io/ssl-redirect"     = "443"
         "alb.ingress.kubernetes.io/inbound-cidrs"    = "91.198.233.56/32"
@@ -48,11 +50,12 @@ resource "kubernetes_manifest" "prom_ingress" {
     }
     spec = {
       ingressClassName = "alb"
-      rules = [{
-        http = {
-          paths = [
-            {
-              path     = "/prometheus"
+      rules = [
+        {
+          host = "prometheus.mishap.local"
+          http = {
+            paths = [{
+              path     = "/"
               pathType = "Prefix"
               backend = {
                 service = {
@@ -60,9 +63,14 @@ resource "kubernetes_manifest" "prom_ingress" {
                   port = { number = 80 }
                 }
               }
-            },
-            {
-              path     = "/grafana"
+            }]
+          }
+        },
+        {
+          host = "grafana.mishap.local"
+          http = {
+            paths = [{
+              path     = "/"
               pathType = "Prefix"
               backend = {
                 service = {
@@ -70,10 +78,10 @@ resource "kubernetes_manifest" "prom_ingress" {
                   port = { number = 80 }
                 }
               }
-            }
-          ]
+            }]
+          }
         }
-      }]
+      ]
     }
   }
 

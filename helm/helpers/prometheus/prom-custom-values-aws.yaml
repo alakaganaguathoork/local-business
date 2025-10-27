@@ -1,7 +1,7 @@
 server:
   extraFlags:
     - web.enable-lifecycle
-    - web.external-url=/prometheus
+    - web.external-url=/
     - web.route-prefix=/
 
   # ingress:

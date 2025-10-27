@@ -13,4 +13,7 @@ service:
     port: 80
     targetPort: 5400
 
-ingress: true
+ingress:
+  spec:
+   rules:
+      host: app.mishap.local
