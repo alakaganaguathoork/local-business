@@ -14,7 +14,7 @@ variable "private_key_algorithm_ca" {
   description = "Algorithm to use to generate a CA private key"
 
   validation {
-    condition = contains("RSA", "ECDSA", "ED25519", var.private_key_algorithm_ca)
+    condition = contains(["RSA", "ECDSA", "ED25519"], var.private_key_algorithm_ca)
 
     error_message = "Should match any of three: `RSA`, `ECDSA`, `ED25519`."
   }
@@ -35,7 +35,7 @@ variable "private_key_algorithm_cert_request" {
   description = "Algorithm to use to generate a wildcard private key"
 
   validation {
-    condition = contains("RSA", "ECDSA", "ED25519", var.private_key_algorithm_cert_request)
+    condition = contains(["RSA", "ECDSA", "ED25519"], var.private_key_algorithm_cert_request)
 
     error_message = "Should match any of three: `RSA`, `ECDSA`, `ED25519`."
   }
