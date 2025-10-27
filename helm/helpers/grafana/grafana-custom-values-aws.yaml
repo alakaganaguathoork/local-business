@@ -33,3 +33,13 @@ env:
           # name: grafana
           # port:
             # number: 80
+
+datasources:
+  datasources.yaml:g
+    apiVersion: 1
+    datasources:
+    - name: Prometheus
+      type: prometheus
+      url: http://prometheus.mishap.local
+      access: proxy
+      isDefault: true
