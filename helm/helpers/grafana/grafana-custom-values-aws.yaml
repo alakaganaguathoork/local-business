@@ -14,9 +14,28 @@ datasources:
         access: proxy
         isDefault: true
 
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+      - name: default
+        orgId: 1
+        folder: ""
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+          
 dashboards:
   default:
     local-business:
       url: https://raw.githubusercontent.com/alakaganaguathoork/local-business/refs/heads/main/monitoring/grafana/dashboards/main.json
       curlOptions: "-sLf"
       token: ""
+
+sidecar:
+  dashboards:
+    enabled: true
+    folder: /var/lib/grafana/dashboards
+    searchNamespace: ALL
