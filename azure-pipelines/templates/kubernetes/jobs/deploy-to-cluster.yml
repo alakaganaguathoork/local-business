@@ -93,5 +93,10 @@ jobs:
                 script: |
                   kubectl get ingress -A
 
+                  ALB=$(kubectl -n monitoring get ing monitoring-shared -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+                  ALB_IP=$(dig +short $ALB | head -1)
+                  echo "URL: $ALB"
+                  echo: "IP: $ALB_IP"
+
     workspace:
       clean: all

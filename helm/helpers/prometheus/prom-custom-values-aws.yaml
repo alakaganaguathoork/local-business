@@ -1,7 +1,7 @@
 server:
   extraFlags:
     - web.enable-lifecycle
-    - web.external-url=/
+    - web.external-url=https://prometheus.mishap.local
     - web.route-prefix=/
 
   # ingress:
