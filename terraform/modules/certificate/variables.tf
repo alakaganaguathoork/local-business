@@ -22,9 +22,9 @@ variable "private_key_algorithm_ca" {
 
 variable "self_signed_cert_subject_ca" {
   type = object({
-    common_name  = string
-    organization = string
-    country      = string
+    common_name  = optional(string)
+    organization = optional(string)
+    country      = optional(string)
   })
   default = {}
 }
