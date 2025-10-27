@@ -8,7 +8,7 @@ terraform {
 provider "aws" { region = var.region }
 
 data "external" "cert" {
-  count = var.generate_new_certificate ? 0 : 1
+  count   = var.generate_new_certificate ? 0 : 1
   program = ["bash", "-lc", "${path.module}/scripts/generate-cert.sh"]
 }
 
@@ -27,17 +27,12 @@ resource "tls_self_signed_cert" "ca" {
   is_ca_certificate     = true
   validity_period_hours = 3650 * 24
 
-  dynamic "subject" {
-    for_each = var.self_signed_cert_subject_ca
-
-    content {
-      common_name  = each.value.common_name
-      organization = each.value.organization
-      country      = each.value.country
-    }
+  subject {
+    common_name  = coalesce(try(var.self_signed_cert_subject_ca.common_name, null), "RootCA")
+    organization = try(var.self_signed_cert_subject_ca.organization, null)
+    country      = try(var.self_signed_cert_subject_ca.country, null)
   }
-
-  allowed_uses = ["cert_signing", "crl_signing", "digital_signature", "key_encipherment"]
+  allowed_uses = ["cert_signing", "crl_signing"]
 }
 
 # --- Wildcard leaf signed by our CA ---
@@ -73,7 +68,7 @@ resource "tls_locally_signed_cert" "leaf" {
 ## Import to ACM
 ###
 resource "aws_acm_certificate" "imported" {
-  count             = var.generate_new_certificate ? 0 : 1
+  count = var.generate_new_certificate ? 0 : 1
 
   private_key       = base64decode(data.external.cert[0].result.private_key_b64)
   certificate_body  = base64decode(data.external.cert[0].result.certificate_b64)
