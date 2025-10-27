@@ -49,7 +49,7 @@ server:
     extraRules:
       - http:
           paths:
-            - path: /
+            - path: /argocd
               pathType: Prefix
               backend:
                 service:
