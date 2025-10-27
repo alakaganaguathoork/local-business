@@ -3,7 +3,7 @@ server:
     - web.enable-lifecycle
     - web.external-url=/prometheus
     - web.route-prefix=/
-    - 
+
   # ingress:
     # enabled: true
     # ingressClassName: alb
