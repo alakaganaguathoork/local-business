@@ -29,14 +29,15 @@ dashboardProviders:
   dashboardproviders.yaml:
     apiVersion: 1
     providers:
-      - name: default
+      - name: dashboards
         orgId: 1
         folder: ""
         type: file
         disableDeletion: false
         editable: false
         options:
-          path: /var/lib/grafana/dashboards/default
+          path: /var/lib/grafana/dashboards
+          foldersFromFilesStructure: true
 
 dashboards:
   default:
@@ -54,11 +55,11 @@ dashboards:
       datasource: Prometheus
 
 # Should be enabled in order to load dashboards from ConfigMap
-sidecar:
-  dashboards:
-    enabled: true
-    label: grafana_dashboard
-    labelValue: "1"
-    folder: /var/lib/grafana/dashboards
-    searchNamespace: ALL
-    defaultFolderName: default
+# sidecar:
+  # dashboards:
+    # enabled: true
+    # label: grafana_dashboard
+    # labelValue: "1"
+    # folder: /var/lib/grafana/dashboards
+    # searchNamespace: ALL
+    # defaultFolderName: default
