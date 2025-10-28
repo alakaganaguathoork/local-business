@@ -1,6 +1,5 @@
-# --- Loki config (EKS) ---
 loki:
-  # keep single binary & no replication for dev
+  # single-binary ok for dev
   commonConfig:
     replication_factor: 1
 
@@ -15,12 +14,18 @@ loki:
           prefix: loki_index_
           period: 24h
 
-  # S3 backend (IRSA will provide credentials)
-  storageConfig:
-    aws:
-      bucketnames: "loki-test-us-east-1"   # e.g., loki-dev-us-east-1
-      region: "us-east-1"
-      s3forcepathstyle: false             # true only if using non-AWS S3 endpoints
+  # ✅ Correct storage keys for the chart
+  storage:
+    type: s3
+    s3:
+      region: us-east-1
+      s3ForcePathStyle: false
+      # endpoint: s3.amazonaws.com        # (optional; omit for AWS)
+      # insecure: false
+    bucketNames:
+      chunks: loki-test-us-east-1-chunks  # use unique names
+      ruler:  loki-test-us-east-1-ruler
+      admin:  loki-test-us-east-1-admin   # required even if ruler off
 
   pattern_ingester:
     enabled: true
@@ -32,62 +37,44 @@ loki:
   ruler:
     enable_api: true
 
-# --- Disable MinIO in EKS ---
 minio:
   enabled: false
 
-# --- Deployment mode (SingleBinary for dev) ---
 deploymentMode: SingleBinary
 
 singleBinary:
   replicas: 1
-  # Enable if you want local disk for caches/TSDB working dir
   persistence:
     enabled: false
-    # storageClass: gp3-auto   # <-- your Auto Mode StorageClass (if you enable)
+    # storageClass: gp3-auto
     # size: 10Gi
 
-# Keep all other modes at 0 (your original intent)
-backend:
-  replicas: 0
-read:
-  replicas: 0
-write:
-  replicas: 0
-ingester:
-  replicas: 0
-querier:
-  replicas: 0
-queryFrontend:
-  replicas: 0
-queryScheduler:
-  replicas: 0
-distributor:
-  replicas: 0
-compactor:
-  replicas: 0
-indexGateway:
-  replicas: 0
-bloomCompactor:
-  replicas: 0
-bloomGateway:
-  replicas: 0
+# keep other modes at 0
+backend:        { replicas: 0 }
+read:           { replicas: 0 }
+write:          { replicas: 0 }
+ingester:       { replicas: 0 }
+querier:        { replicas: 0 }
+queryFrontend:  { replicas: 0 }
+queryScheduler: { replicas: 0 }
+distributor:    { replicas: 0 }
+compactor:      { replicas: 0 }
+indexGateway:   { replicas: 0 }
+bloomCompactor: { replicas: 0 }
+bloomGateway:   { replicas: 0 }
 
-# --- Service: internal-only, Grafana should use this DNS ---
 service:
   type: ClusterIP
   ports:
     http: 3100
 
-# Optional: make Prometheus scrape Loki metrics via annotations (if you’re not using ServiceMonitor)
 podAnnotations:
   prometheus.io/scrape: "true"
   prometheus.io/port: "3100"
   prometheus.io/path: "/metrics"
 
-# --- IRSA: attach the IAM role that allows s3:Get/Put/List on your bucket ---
 serviceAccount:
   create: true
   name: loki
   annotations:
-    eks.amazonaws.com/role-arn: "arn:aws:iam::838062310110:role/loki"
+    eks.amazonaws.com/role-arn: arn:aws:iam::838062310110:role/loki
