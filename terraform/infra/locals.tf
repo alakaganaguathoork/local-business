@@ -4,6 +4,7 @@ locals {
   vpc_cidr_block = "10.0.0.0/16"
   sg_allowed_ips_list = ["91.198.233.56/32"]
   account_id = data.aws_caller_identity.current.account_id
+  oidc_thumbprint = "9e99a48a9960b14926bb7f3b02e22da0c202df9a"
 
   access_users = [
     "arn:aws:iam::${local.account_id}:user/dev-cli",
@@ -71,11 +72,11 @@ locals {
   }
 
   buckets = {
-    logs = {
-      name = "sandbox-logs-test-6g6g6"
+    chunk = {
+      name = "loki-${local.env}-${local.region}-chunks"
     }
-    alerts = {
-      name = "sandbox-alerts-test"
+    ruler = {
+      name = "loki-${local.env}-${local.region}-ruler"
     }
   }
 }

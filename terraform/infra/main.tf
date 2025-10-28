@@ -38,7 +38,7 @@ resource "aws_subnet" "subnet" {
   tags = {
     "kubernetes.io/role/elb"                      = "1"
     "kubernetes.io/cluster/${local.cluster.name}" = "owned"
-    "Name"                                        = "public-subnet-${local.cluster.name}"
+    "Name"                                        = "public-subnet-${local.cluster.name}-${count.index}"
   }
 }
 
@@ -124,51 +124,6 @@ resource "aws_iam_role" "cluster" {
   })
 }
 
-# resource "aws_iam_policy" "cluster_lb" {
-# name        = "eks-cluster-lb"
-# description = "Permissions for EKS cluster to manage Load Balancers"
-#  
-# policy = jsonencode({
-# Version = "2012-10-17"
-# Statement = [
-# {
-# Sid    = "LoadBalancer"
-# Effect = "Allow"
-# Action = [
-# "elasticloadbalancing:CreateLoadBalancer",
-# "elasticloadbalancing:CreateTargetGroup",
-# "elasticloadbalancing:CreateListener",
-# "elasticloadbalancing:CreateRule",
-# "elasticloadbalancing:DeleteLoadBalancer",
-# "elasticloadbalancing:DeleteTargetGroup",
-# "elasticloadbalancing:DeleteListener",
-# "elasticloadbalancing:DeleteRule",
-# "elasticloadbalancing:Modify*",
-# "elasticloadbalancing:Describe*",
-# "ec2:CreateSecurityGroup",
-# "ec2:DeleteSecurityGroup",
-# "ec2:AuthorizeSecurityGroupIngress",
-# "ec2:RevokeSecurityGroupIngress",
-# "ec2:AuthorizeSecurityGroupEgress",
-# "ec2:RevokeSecurityGroupEgress",
-# "ec2:Describe*"
-# ]
-# Resource = "*"
-# Condition = {
-# StringEquals = {
-# "aws:RequestTag/eks:eks-cluster-name" = "$${aws:PrincipalTag/eks:eks-cluster-name}"
-# }
-# }
-# }
-# ]
-# })
-# }
-#
-# resource "aws_iam_role_policy_attachment" "cluster_lb_attach" {
-# policy_arn = aws_iam_policy.cluster_lb.arn
-# role       = aws_iam_role.cluster.name
-# }
-
 resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSClusterPolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
   role       = aws_iam_role.cluster.name
@@ -197,6 +152,55 @@ resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSNetworkingPolicy" {
 resource "aws_iam_role_policy_attachment" "cluster_AmazonEKSServicePolicy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSServicePolicy"
   role       = aws_iam_role.cluster.name
+}
+
+resource "aws_iam_role" "loki" {
+  name = "loki"
+  assume_role_policy = jsonencode({
+    Statement = [{
+      Action = "sts:AssumeRoleWithWebIdentity"
+      Condition = {
+        StringEquals = {
+          "oidc.eks.${local.region}.amazonaws.com/id/${aws_iam_openid_connect_provider.eks.id}:aud" = "sts.amazonaws.com"
+          "oidc.eks.${local.region}.amazonaws.com/id/${aws_iam_openid_connect_provider.eks.id}:sub" = "system:serviceaccount:loki:loki"
+        }
+      }
+      Effect = "Allow"
+      Principal = {
+        # Federated = "arn:aws:iam::${local.account_id}:oidc-provider/oidc.eks.${local.region}.amazonaws.com/id/${aws_iam_openid_connect_provider.eks.id}"
+        Federated = aws_iam_openid_connect_provider.eks.arn
+      }
+    }]
+    Version = "2012-10-17"
+  })
+}
+
+resource "aws_iam_role_policy" "loki" {
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Sid    = "LokiStorage",
+        Effect = "Allow",
+        Action = [
+          "s3:ListBucket",
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:DeleteObject"
+        ]
+
+        Resource = [
+          "arn:aws:s3:::${aws_s3_bucket.loki["chunk"].name}",
+          "arn:aws:s3:::${aws_s3_bucket.loki["chunk"].name}/*",
+          "arn:aws:s3:::${aws_s3_bucket.loki["ruler"].name}",
+          "arn:aws:s3:::${aws_s3_bucket.loki["ruler"].name}/*"
+        ]
+      }
+    ]
+  })
+  role = aws_iam_role.loki.name
+
+  depends_on = [aws_s3_bucket.loki]
 }
 
 ###
@@ -251,6 +255,15 @@ resource "aws_eks_cluster" "main" {
   ]
 }
 
+
+resource "aws_iam_openid_connect_provider" "eks" {
+  url             = data.aws_eks_cluster.main.identity[0].oidc[0].issuer
+  client_id_list  = ["sts.amazonaws.com"]
+  thumbprint_list = [local.oidc_thumbprint]
+
+  depends_on = [aws_eks_cluster.main]
+}
+
 ###
 ## Access management
 ###
@@ -271,4 +284,10 @@ resource "aws_eks_access_policy_association" "access_users" {
   access_scope {
     type = "cluster"
   }
+}
+
+resource "aws_s3_bucket" "loki" {
+  for_each = local.buckets
+
+  bucket = each.value["name"]
 }
