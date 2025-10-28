@@ -45,9 +45,9 @@ deploymentMode: SingleBinary
 singleBinary:
   replicas: 1
   persistence:
-    enabled: false
-    # storageClass: gp3-auto
-    # size: 10Gi
+    enabled: enable
+    storageClass: gp3
+    size: 1Gi
 
 # keep other modes at 0
 backend:        { replicas: 0 }
