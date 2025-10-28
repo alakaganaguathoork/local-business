@@ -12,6 +12,8 @@ app/logs/
 app/**/.venv*/
 app/.env
 
+#docs
+docs/.venv
 # helm directory
 !/helm/**/.helmignore
 
