@@ -65,14 +65,14 @@ stages:
           awsRegion: $(awsRegion)
           awsClusterName: $(awsClusterName)
       
-      # - template: ./templates/helm/jobs/prometheus.yml
-      # Install monitoring in a cluster using Helm
-        # parameters:
-          # deploymentName: Monitoring
-          # dependsOn: Argocd
-          # environment: $(environment)
-          # awsRegion: $(awsRegion)
-          # awsClusterName: $(awsClusterName)
+      - template: ./templates/helm/jobs/grafana.yml
+      # Apply Grafana custom dashboard
+        parameters:
+          deploymentName: Grafana
+          dependsOn: Argocd
+          environment: $(environment)
+          awsRegion: $(awsRegion)
+          awsClusterName: $(awsClusterName)
 
       - template: ./templates/kubernetes/jobs/deploy-to-cluster.yml
       # Install Local Business app in a cluster using Helm

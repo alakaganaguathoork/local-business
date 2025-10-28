@@ -1,0 +1,52 @@
+parameters:
+  - name: deploymentName
+    type: string
+  - name: dependsOn
+    type: object
+    default: []
+  - name: environment
+    type: string
+  - name: awsRegion
+    type: string
+  - name: awsClusterName
+    type: string
+
+jobs:
+  - deployment: ${{ parameters.deploymentName }}
+    displayName: ${{ parameters.deploymentName }}
+    dependsOn: ${{ parameters.dependsOn }}
+    environment: ${{ parameters.environment }}
+    variables:
+      namespace: argocd
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - checkout: self
+
+            - task: Bash@3
+              name: update_config
+              displayName: aws eks update-kubeconfig
+              condition: succeeded()
+              inputs:
+                targetType: inline
+                script: |
+                  aws eks update-kubeconfig \
+                    --region ${{ parameters.awsRegion }} \
+                    --name ${{ parameters.awsClusterName }}
+              
+            - task: Bash@3
+              name: argocd_display_admin_password
+              displayName: argocd display admin password
+              condition: succeeded()
+              inputs:
+                targetType: inline
+                script: |
+                  echo "Applying a custom dashboard..."
+
+                  kubectl create configmap local-business-dashboard \
+                    -n monitoring \
+                    --from-file=main.json=monitoring/grafana/dashboards/main.json \
+                    -o yaml --dry-run=client | kubectl apply -f -
+                  kubectl label configmap -n monitoring local-business-dashboard grafana_dashboard=1 --overwrite
+                  kubectl label configmap -n monitoring local-business-dashboard grafana_folder="Local_Business" --overwrite
