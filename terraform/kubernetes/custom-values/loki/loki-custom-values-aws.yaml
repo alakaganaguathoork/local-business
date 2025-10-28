@@ -1,0 +1,80 @@
+loki:
+  auth_enabled: false
+  # single-binary ok for dev
+  commonConfig:
+    replication_factor: 1
+
+  # TSDB on S3
+  schemaConfig:
+    configs:
+      - from: "2024-04-01"
+        store: tsdb
+        object_store: s3
+        schema: v13
+        index:
+          prefix: loki_index_
+          period: 24h
+
+  storage:
+    type: s3
+    s3:
+      region: us-east-1
+      s3ForcePathStyle: false
+      # endpoint: s3.amazonaws.com        # (optional; omit for AWS)
+      # insecure: false
+    bucketNames:
+      chunks: loki-test-us-east-1-chunks
+      ruler:  loki-test-us-east-1-ruler
+      admin:  loki-test-us-east-1-admin   # required even if ruler off
+
+  pattern_ingester:
+    enabled: true
+
+  limits_config:
+    allow_structured_metadata: true
+    volume_enabled: true
+
+  ruler:
+    enable_api: true
+
+minio:
+  enabled: false
+
+deploymentMode: SingleBinary
+
+singleBinary:
+  replicas: 1
+  persistence:
+    enabled: enable
+    storageClass: gp3
+    size: 1Gi
+
+# keep other modes at 0
+backend:        { replicas: 0 }
+read:           { replicas: 0 }
+write:          { replicas: 0 }
+ingester:       { replicas: 0 }
+querier:        { replicas: 0 }
+queryFrontend:  { replicas: 0 }
+queryScheduler: { replicas: 0 }
+distributor:    { replicas: 0 }
+compactor:      { replicas: 0 }
+indexGateway:   { replicas: 0 }
+bloomCompactor: { replicas: 0 }
+bloomGateway:   { replicas: 0 }
+
+service:
+  type: ClusterIP
+  ports:
+    http: 3100
+
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "3100"
+  prometheus.io/path: "/metrics"
+
+serviceAccount:
+  create: true
+  name: loki
+  annotations:
+    eks.amazonaws.com/role-arn: arn:aws:iam::838062310110:role/loki

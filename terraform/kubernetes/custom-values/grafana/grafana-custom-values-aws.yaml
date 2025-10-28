@@ -1,0 +1,52 @@
+adminPassword: admin
+
+env:
+  GF_SERVER_ROOT_URL: "https://grafana.mishap.local"
+  GF_SERVER_SERVE_FROM_SUB_PATH: "false"
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://prometheus-server.monitoring.svc.cluster.local
+        access: proxy
+        isDefault: true
+      - name: Loki
+        type: loki
+        access: proxy
+        orgId: 1
+        url: http://loki-gateway.monitoring.svc.cluster.local:80
+        basicAuth: false
+        isDefault: false
+        version: 1
+        editable: false
+
+dashboardProviders:
+  dashboardproviders.yaml:
+    apiVersion: 1
+    providers:
+      - name: default
+        orgId: 1
+        folder: ""
+        type: file
+        disableDeletion: false
+        editable: true
+        options:
+          path: /var/lib/grafana/dashboards/default
+
+dashboards:
+  default:
+    local-business:
+      url: https://raw.githubusercontent.com/alakaganaguathoork/local-business/refs/heads/main/monitoring/grafana/dashboards/main.json
+      curlOptions: "-sLf"
+      token: ""
+      datasource: Prometheus
+
+# Should be enabled in order to load dashboards from ConfigMap
+sidecar:
+  dashboards:
+    enabled: true
+    folder: /var/lib/grafana/dashboards
+    searchNamespace: ALL
