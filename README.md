@@ -2,6 +2,10 @@
 
 This project is a Local Business Open API that provides information about local businesses using data from RapidAPI. It allows users to search for businesses based on various criteria such as location, category, and ratings.
 
+## Upd: 28/Oct/2025
+
+As of this date a personal subscrition to RapidAPI's "Local Business Data API" has expired and the API is no longer accessible. Therefore, the functionality of this project is currently limited. The project structure, Docker setup, Helm charts, Terraform configurations, and monitoring stack remain intact for future use when access to the API is restored.
+
 ## TL;DR
 
 - **App**: Flask app exposes `/` (with a redirect to `rapid_api_search`), `/test`, `/health`, `/metrics`
