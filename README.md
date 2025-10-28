@@ -5,7 +5,7 @@ This project is a Local Business Open API that provides information about local 
 ## TL;DR
 
 - **App**: Flask app exposes `/` (with a redirect to `rapid_api_search`) `/test`, `/health`, `/metrics`
- 
+
 - **Image**: `Dockerfile` built & pushed by **Azure DevOps** to **Docker Hub**
 
 - **Local run**: `docker-compose.yml` (app + monitoring stack)
