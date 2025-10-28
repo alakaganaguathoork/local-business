@@ -4,9 +4,9 @@ This project is a Local Business Open API that provides information about local 
 
 ## TL;DR
 
-- **App**: Flask app exposes `/` (with a redirect to `rapid_api_search`) `/test`, `/health`, `/metrics`
+- **App**: Flask app exposes `/` (with a redirect to `rapid_api_search`), `/test`, `/health`, `/metrics`
 
-- **Image**: `Dockerfile` built & pushed by **Azure DevOps** to **Docker Hub**
+- **Image**: `Dockerfile` ( compressed size: 23.19 MB | download size: 61.1MB ) built & pushed by **Azure DevOps** to **Docker Hub** (*w/o vulnerabilities checks*)
 
 - **Local run**: `docker-compose.yml` (app + monitoring stack)
 
@@ -51,3 +51,9 @@ This project is a Local Business Open API that provides information about local 
 ### ArgoCD Application for local-business Helm chart
 
 ![argocd local-business](images/2025-10-27_19-22.png "ArgoCD local-business")
+
+## Additional stuff:
+
+### Alerting to Telegram bot (only from local setup via **Docker Compose**)
+
+![alertmanager telegram](images/2025-10-28_23-03.png "Alertmanager Telegram")

@@ -44,7 +44,8 @@ scrape_configs:
     scrape_interval: 5s
     static_configs:
       - targets: 
-          - 'localhost:3000'
+          - 'grafana:3000'
         labels:
           group: "internal_monitoring"
+    metrics_path: /metrics
     
