@@ -2,19 +2,26 @@ controller:
   type: daemonset
 
 alloy:
+  # mount host paths inside the pod:
   mounts:
-    varlog: true            # /host/var/log
-    run: true               # /host/run
-    # (add any extra hostPaths you need)
+    varlog: true        # mounts host /var/log  ->  /host/var/log
+    run: true           # mounts host /run      ->  /host/run
 
   configMap:
     content: |
-      discovery.kubernetes "nodes" { role = "node" }
+      logging { level = "info" }
 
-      // Read systemd journal from the host (path depends on AMI):
+      // Journald on EKS typically lives here:
       loki.source.journal "systemd" {
-        path       = "/host/var/log/journal"   // or /host/run/log/journal
+        path       = "/host/run/log/journal"
         labels     = { job = "systemd" }
+        forward_to = [loki.process.k8s.receiver]
+      }
+
+      // Keep your existing pod log source (if you already had it):
+      discovery.kubernetes "pods" { role = "pod" }
+      loki.source.kubernetes "pod_logs" {
+        targets    = discovery.kubernetes.pods.targets
         forward_to = [loki.process.k8s.receiver]
       }
 
