@@ -41,10 +41,10 @@ dashboardProviders:
 
 dashboards:
   default:
-    # local-business:
-      # url: https://raw.githubusercontent.com/alakaganaguathoork/local-business/refs/heads/main/monitoring/grafana/dashboards/main.json
-      # curlOptions: "-sLf"
-      # datasource: Prometheus
+    local-business:
+      url: https://raw.githubusercontent.com/alakaganaguathoork/local-business/refs/heads/main/monitoring/grafana/dashboards/main.json
+      curlOptions: "-sLf"
+      datasource: Prometheus
     argocd:
       gnetId: 14584
       revision: 1 
