@@ -1,10 +1,8 @@
 # https://diagrams.mingrammer.com/
 
 from diagrams import Diagram, Cluster, Edge
+
 from diagrams.onprem.client import Users
-from diagrams.onprem.compute import Server
-from diagrams.onprem.container import Docker
-from diagrams.onprem.iac import Terraform
 from diagrams.onprem.gitops import ArgoCD
 from diagrams.onprem.monitoring import Prometheus, Grafana
 from diagrams.onprem.logging import Loki
@@ -12,8 +10,8 @@ from diagrams.onprem.logging import Loki
 from diagrams.aws.general import InternetAlt1
 from diagrams.aws.network import ALB, IGW, PublicSubnet
 from diagrams.aws.compute import EKS, EC2AutoScaling, EC2
+
 from diagrams.k8s.ecosystem import Helm
-from diagrams.k8s.group import NS as Namespace
 from diagrams.k8s.network import Ingress, Service as K8sService
 from diagrams.k8s.compute import Deployment, Pod
 from diagrams.k8s.compute import RS as ReplicaSet
@@ -25,7 +23,7 @@ graph_attrs = {
     "ranksep": "0.9",
     "pad": "0.2",
     "newrank": "true",
-    "bgcolor": "white",  # Set background to transparent
+    "bgcolor": "white",
 }
 node_attrs = {
     "fontsize": "14",
