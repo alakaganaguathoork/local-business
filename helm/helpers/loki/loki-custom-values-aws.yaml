@@ -86,8 +86,8 @@ podAnnotations:
   prometheus.io/path: "/metrics"
 
 # --- IRSA: attach the IAM role that allows s3:Get/Put/List on your bucket ---
-# serviceAccount:
-  # create: true
-  # name: loki
-  # annotations:
-    # eks.amazonaws.com/role-arn: "arn:aws:iam::<ACCOUNT_ID>:role/<loki-irsa-role>"
+serviceAccount:
+  create: true
+  name: loki
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::838062310110:role/loki"
