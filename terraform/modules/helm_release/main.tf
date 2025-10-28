@@ -90,7 +90,7 @@ resource "kubernetes_manifest" "prom_ingress" {
               backend = {
                 service = {
                   name = "loki"
-                  port = { number = 80 }
+                  port = { number = 3100 }
                 }
               }
             }]
