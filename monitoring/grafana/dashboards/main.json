@@ -35,13 +35,13 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 29,
+  "id": 2,
   "links": [],
   "panels": [
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "PBFA97CFB590B2093"
       },
       "fieldConfig": {
         "defaults": {
@@ -135,7 +135,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "PBFA97CFB590B2093"
       },
       "fieldConfig": {
         "defaults": {
@@ -197,7 +197,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "  rate(local_http_request_duration_seconds_bucket[1m])",
+          "expr": "rate(local_http_request_duration_seconds_bucket{endpoint=~\"/rapid_api_search|/health\"}[5m])",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -209,7 +209,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "PBFA97CFB590B2093"
       },
       "fieldConfig": {
         "defaults": {
@@ -303,7 +303,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "PBFA97CFB590B2093"
       },
       "fieldConfig": {
         "defaults": {
@@ -385,7 +385,7 @@
       "targets": [
         {
           "editorMode": "code",
-          "expr": "local_business_requests_total",
+          "expr": "rate(local_http_requests_total[5h])",
           "legendFormat": "__auto",
           "range": true,
           "refId": "A"
@@ -397,7 +397,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "prometheus"
+        "uid": "PBFA97CFB590B2093"
       },
       "fieldConfig": {
         "defaults": {
@@ -499,7 +499,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "bekdxiz4qxb0gd"
+        "uid": "PBFA97CFB590B2093"
       },
       "fieldConfig": {
         "defaults": {
@@ -585,7 +585,7 @@
             "uid": "bekdxiz4qxb0gd"
           },
           "disableTextWrap": false,
-          "editorMode": "builder",
+          "editorMode": "code",
           "expr": "prometheus_http_request_duration_seconds_count",
           "fullMetaSearch": false,
           "includeNullMetadata": true,
@@ -614,5 +614,5 @@
   "timezone": "browser",
   "title": "New dashboard",
   "uid": "eeke1e5ku2zuof",
-  "version": 1
+  "version": 3
 }

@@ -27,9 +27,9 @@ terraform/**/*.auto.tfvars
 terraform/**/*.lock.hcl
 terraform/**/*tfplan*
 terraform/**/*.output
-!terraform/**/.terraformignore
 terraform/**/generated-certs/
 terraform/**/custom-values/*-values.yaml
+!terraform/**/.terraformignore
 
 # monitoring
 monitoring/**/.env
