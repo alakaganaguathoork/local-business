@@ -17,15 +17,15 @@ This project is a Local Business Open API that provides information about local 
 
 ![architecture](docs/architecture.png "Architecture")
 
-## Notes:
+## Notes
 
-* The RapidAPI key is stored in .env file for local development and as a Kubernetes secret for production deployments.
+- The RapidAPI key is stored in .env file for local development and as a Kubernetes secret for production deployments.
 
-* A shared Load Balancer with TLS termination is configured to route based on local hostnames. So, in order to make it work locally, you need to add the following entries to your `/etc/hosts` file with provisioned node IPs (also, `dnsmasq` can be used locally).
+- A shared Load Balancer with TLS termination is configured to route based on local hostnames. So, in order to make it work locally, you need to add the following entries to your `/etc/hosts` file with provisioned node IPs (also, `dnsmasq` can be used locally).
 
 ## Examples
 
-### TLS self-signed certificate verification:
+### TLS self-signed certificate verification
 
 ![tls local-business](images/2025-10-28_03-35.png "TLS local-business")
 
@@ -33,10 +33,10 @@ This project is a Local Business Open API that provides information about local 
 
 ![prom local-business](images/2025-10-28_12-49.png "Prom local-business")
 
-### Grafana dashboard with custom panels for local-business metrics:
+### Grafana dashboard with custom panels for local-business metrics
 
 ![grafana local-business](images/2025-10-28_12-50.png "Grafana local-business")
 
-### ArgoCD Application for local-business Helm chart:
+### ArgoCD Application for local-business Helm chart
 
 ![argocd local-business](images/2025-10-27_19-22.png "ArgoCD local-business")
