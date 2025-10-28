@@ -14,7 +14,6 @@ app/.env
 
 # helm directory
 !/helm/**/.helmignore
-helm/helpers/**/*-values.yaml
 
 # terraform/ directories
 terraform/**/.terraform/
@@ -30,6 +29,7 @@ terraform/**/*tfplan*
 terraform/**/*.output
 !terraform/**/.terraformignore
 terraform/**/generated-certs/
+terraform/**/custom-values/*-values.yaml
 
 # monitoring
 monitoring/**/.env
