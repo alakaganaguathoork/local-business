@@ -33,9 +33,13 @@ This project is a Local Business Open API that provides information about local 
 
 ![prom local-business](images/2025-10-28_12-49.png "Prom local-business")
 
-### Grafana dashboard with custom panels for local-business metrics
+### Grafana Node Exporter imported dashboard
 
-![grafana local-business](images/2025-10-28_12-50.png "Grafana local-business")
+![grafana node-exporter](images/2025-10-28_22-00.png "Grafana Node Exporter")
+
+### Grafana dashboard with custom panels for local-business metrics (not mastered yet, work in progress)
+
+![grafana local-business](images/2025-10-28_22-06.png "Grafana local-business")
 
 ### ArgoCD Application for local-business Helm chart
 
