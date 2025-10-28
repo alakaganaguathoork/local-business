@@ -1,0 +1,12 @@
+[Unit]
+Description=CRI Docker Socket for Kubernetes
+PartOf=cri-docker.service
+
+[Socket]
+ListenStream=/run/cri-dockerd.sock
+SocketMode=0660
+SocketUser=root
+SocketGroup=docker
+
+[Install]
+WantedBy=sockets.target

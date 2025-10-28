@@ -1,0 +1,8 @@
+lsb-release
+ca-certificates
+gnupg
+gpg
+apt-transport-https
+net-tools
+nano
+tar

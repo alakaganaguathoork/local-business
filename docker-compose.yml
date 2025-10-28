@@ -14,12 +14,12 @@ services:
     ports: 
       - "5400:5400"
 
-  local-db:
-    image: mysql
-    container_name: local-db
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
+  # local-db:
+    # image: mysql
+    # container_name: local-db
+    # restart: always
+    # environment:
+      # MYSQL_ROOT_PASSWORD: root
     # volumes:
       # - .docker/local_db_storage:
 

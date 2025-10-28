@@ -1,0 +1,61 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+BOOT_NODE_IP = "172.16.8.9"
+CP_NODE_IP = "172.16.8.10"
+W_NODE_1_IP = "172.16.8.11"
+W_NODE_2_IP = "172.16.8.12"
+
+Vagrant.configure("2") do |config|
+    # config.vm.box = "ubuntu/jammy64"
+    # config.vm.box_version = "20220405.0.0"
+    config.vm.box = "bento/ubuntu-24.04"
+    # config.vm.box_version = "202508.03.0"
+    config.vm.box_check_update = true
+    config.vm.synced_folder "shared/", "/home/vagrant/shared"
+    config.vm.synced_folder "configs/", "/home/vagrant/configs"
+    config.vm.post_up_message = "++++++++ SUCCESS ++++++++"
+
+    boxes = [
+        { :name => "bootstrap", :ip => BOOT_NODE_IP, :cpus => 1, :memory => 1024, :size => "5GB" },
+        { :name => "control-plane", :ip => CP_NODE_IP, :cpus => 2, :memory => 2048, :size => "10GB" },
+        { :name => "worker-1", :ip => W_NODE_1_IP, :cpus => 1, :memory => 2048, :size => "15GB" },
+        { :name => "worker-2", :ip => W_NODE_2_IP, :cpus => 1, :memory => 2048, :size => "15GB" }
+    ]
+
+    boxes.each do |opts|
+        config.vm.define opts[:name] do |node|
+            node.vm.hostname = opts[:name]
+            node.vm.network :private_network, ip: opts[:ip]
+            node.vm.disk :disk,
+                name: "vd-#{opts[:name]}",
+                size: opts[:size]
+            
+
+            node.vm.provider "virtualbox" do |vb|
+                vb.name = opts[:name]
+                vb.cpus = opts[:cpus]
+                vb.memory = opts[:memory]
+            end
+
+            node.vm.provision :shell,
+                path: "./nodes-shared-setup.sh"
+
+            if node.vm.hostname == "control-plane" then
+                node.vm.provision :shell,
+                    path: "./k8s-control-plane-node-setup.sh"
+                
+                node.vm.provision :shell,
+                    inline: <<-SHELL
+                        echo "$(id -u)"
+                        echo "$(id -g)"
+                        echo $USER
+                    SHELL
+            end
+
+            if node.vm.hostname.start_with?("worker-") then
+                node.vm.provision :shell, path: "./k8s-worker-node-setup.sh"
+            end
+        end
+    end
+end

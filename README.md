@@ -5,12 +5,19 @@ This project is a Local Business Open API that provides information about local 
 ## TL;DR
 
 - **App**: Flask app exposes `/` (with a redirect to `rapid_api_search`) `/test`, `/health`, `/metrics`
+ 
 - **Image**: `Dockerfile` built & pushed by **Azure DevOps** to **Docker Hub**
+
 - **Local run**: `docker-compose.yml` (app + monitoring stack)
-- **Kubernetes**: full Helm chart for the app; Argo CD used for GitOps deployment
-- **Observability**: Prometheus rules/targets/alerts, custom Grafana dashboard, Loki logs via Alloy
-- **IaC**: Terraform for **Azure** and **AWS (EKS Auto mode)** with networking, security groups, RBAC, Helm releases (*Argo CD*, *Prometheus*, *Grafana*, *Loki*, *Alloy*); Terraform Cloud backend & webhook to Azure DevOps
-- **CI/CD**: Azure DevOps pipeline runs on a **self-hosted Docker agent** and can be triggered by **Terraform Cloud** after successful infra apply
+
+- **Kubernetes**: full [Helm chart](https://github.com/alakaganaguathoork/local-business/tree/main/helm/charts/local-business) for the app; Argo CD used for GitOps deployment
+
+- **Observability**: Prometheus rules/targets (the [alert](https://github.com/alakaganaguathoork/local-business/blob/main/monitoring/prometheus/prometheus.rules.yml) worked only [locally](https://github.com/alakaganaguathoork/local-business/tree/main/monitoring/alertmanager)), custom [Grafana dashboard](https://github.com/alakaganaguathoork/local-business/blob/main/monitoring/grafana/dashboards/main.json), Loki logs via Alloy ([#TBD](https://github.com/alakaganaguathoork/local-business/blob/main/monitoring/alloy/config/config%2Calloy))
+
+- **IaC**: [Terraform](https://github.com/alakaganaguathoork/local-business/tree/main/terraform) for **AWS (EKS Auto mode)** with networking, security groups, RBAC, Helm releases (*Argo CD*, *Prometheus*, *Grafana*, *Loki*, *Alloy*); Terraform Cloud backend & webhook to Azure DevOps
+
+- **CI/CD**: Azure DevOps pipeline runs on a [**self-hosted Docker agent**](https://github.com/alakaganaguathoork/azure-pipelines-agent) and can be triggered by **Terraform Cloud** after successful infra apply
+
 - **Local cluster**: Vagrant project to bootstrap a test cluster
 
 ## Architecture

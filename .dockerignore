@@ -1,13 +1,20 @@
-Dockerfile*
 docker-compose*
 .dockerignore
 README.md
-LICENSE
-.docker/
-.vscode/
 
 .env
 app/.env
+
+.docker/
+.vscode/
+azure-pipelines/
+docs/
+helm/
+images/
+k6/
+monitoring/
+terraform/
+vargrant/
 
 .git
 .gitignore
