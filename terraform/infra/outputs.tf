@@ -13,3 +13,7 @@ output "security_groups" {
 output "oidc_issuer_url" {
   value = data.aws_eks_cluster.main.identity[0].oidc[0].issuer
 }
+
+output "loki_role_arn" {
+  value = aws_iam_role.loki.arn
+}
