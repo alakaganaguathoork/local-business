@@ -33,5 +33,12 @@ locals {
       repository      = "https://grafana.github.io/helm-charts"
       chart           = "loki"
     }
+    alloy = {
+      values_file_url = "https://raw.githubusercontent.com/alakaganaguathoork/local-business/refs/heads/main/helm/helpers/alloy/alloy-custom-values-aws.yaml"
+      name            = "alloy"
+      namespace       = "monitoring"
+      repository      = "https://grafana.github.io/helm-charts"
+      chart           = "alloy"
+    }
   }
 }
