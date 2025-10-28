@@ -190,10 +190,10 @@ resource "aws_iam_role_policy" "loki" {
         ]
 
         Resource = [
-          "arn:aws:s3:::${aws_s3_bucket.loki["chunk"].name}",
-          "arn:aws:s3:::${aws_s3_bucket.loki["chunk"].name}/*",
-          "arn:aws:s3:::${aws_s3_bucket.loki["ruler"].name}",
-          "arn:aws:s3:::${aws_s3_bucket.loki["ruler"].name}/*"
+          "arn:aws:s3:::${aws_s3_bucket.loki["chunk"].id}",
+          "arn:aws:s3:::${aws_s3_bucket.loki["chunk"].id}/*",
+          "arn:aws:s3:::${aws_s3_bucket.loki["ruler"].id}",
+          "arn:aws:s3:::${aws_s3_bucket.loki["ruler"].id}/*"
         ]
       }
     ]
