@@ -82,3 +82,13 @@ extraScrapeConfigs: |
         replacement: $1:$2
     metrics_path: /metrics
     scheme: http
+  
+  - job_name: 'argocd'
+    kubernetes_sd_configs:
+    - role: endpoints
+      namespaces:
+        names: ['argocd']
+    relabel_configs:
+    - action: keep
+      source_labels: [__meta_kubernetes_service_name]
+      regex: (argocd-metrics|argocd-server-metrics|argocd-repo-server)
