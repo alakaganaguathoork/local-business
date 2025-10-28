@@ -52,7 +52,7 @@ This project is a Local Business Open API that provides information about local 
 
 ![argocd local-business](images/2025-10-27_19-22.png "ArgoCD local-business")
 
-## Additional stuff:
+## Additional stuff
 
 ### Alerting to Telegram bot (only from local setup via **Docker Compose**)
 
