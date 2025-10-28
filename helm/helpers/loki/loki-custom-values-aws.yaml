@@ -15,7 +15,6 @@ loki:
           prefix: loki_index_
           period: 24h
 
-  # ✅ Correct storage keys for the chart
   storage:
     type: s3
     s3:
@@ -24,7 +23,7 @@ loki:
       # endpoint: s3.amazonaws.com        # (optional; omit for AWS)
       # insecure: false
     bucketNames:
-      chunks: loki-test-us-east-1-chunks  # use unique names
+      chunks: loki-test-us-east-1-chunks
       ruler:  loki-test-us-east-1-ruler
       admin:  loki-test-us-east-1-admin   # required even if ruler off
 
