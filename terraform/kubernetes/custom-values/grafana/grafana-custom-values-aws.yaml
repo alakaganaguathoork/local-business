@@ -43,6 +43,10 @@ dashboards:
       curlOptions: "-sLf"
       token: ""
       datasource: Prometheus
+    argocd:
+      gnetId: 14584        # Argo CD dashboard ID on grafana.com
+      revision: 1 
+      datasource: Prometheu
 
 # Should be enabled in order to load dashboards from ConfigMap
 sidecar:
