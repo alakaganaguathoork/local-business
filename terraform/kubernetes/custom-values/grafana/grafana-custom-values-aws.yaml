@@ -36,7 +36,7 @@ dashboardProviders:
         disableDeletion: false
         editable: true
         options:
-          path: /var/lib/grafana/dashboards/default
+          path: /var/lib/grafana/dashboards
 
 dashboards:
   default:
@@ -57,6 +57,7 @@ dashboards:
 sidecar:
   dashboards:
     enabled: true
+    label: grafana_dashboard
+    labelValue: "1"
     folder: /var/lib/grafana/dashboards
     searchNamespace: ALL
-    defaultFolderName: default
