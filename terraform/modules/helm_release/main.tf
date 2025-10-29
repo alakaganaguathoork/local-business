@@ -80,21 +80,6 @@ resource "kubernetes_manifest" "prom_ingress" {
               }
             }]
           }
-        },
-        {
-          host = "loki.mishap.local"
-          http = {
-            paths = [{
-              path     = "/"
-              pathType = "Prefix"
-              backend = {
-                service = {
-                  name = "loki"
-                  port = { number = 3100 }
-                }
-              }
-            }]
-          }
         }
       ]
     }
