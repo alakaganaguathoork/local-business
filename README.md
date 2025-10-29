@@ -28,10 +28,9 @@ As of this date a personal subscrition to RapidAPI's "Local Business Data API" h
 
 ![architecture](docs/architecture.png "Architecture")
 
-## General 
+## Demo
 
-[![demo](https://youtu.be/3v7dnEryvEI)]
-<video src="https://youtu.be/3v7dnEryvEI" controls></video>
+[![demo](https://img.youtube.com/vi/3v7dnEryvEI/0.jpg)](https://youtu.be/3v7dnEryvEI)
 
 ## Notes
 
