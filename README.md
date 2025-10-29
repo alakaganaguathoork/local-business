@@ -28,6 +28,11 @@ As of this date a personal subscrition to RapidAPI's "Local Business Data API" h
 
 ![architecture](docs/architecture.png "Architecture")
 
+## General 
+
+[![demo](https://youtu.be/3v7dnEryvEI)]
+<video src="https://youtu.be/3v7dnEryvEI" controls></video>
+
 ## Notes
 
 - The RapidAPI key is stored in .env file for local development and as a Kubernetes secret for production deployments.
