@@ -36,8 +36,8 @@ jobs:
                     --name ${{ parameters.awsClusterName }}
               
             - task: Bash@3
-              name: argocd_display_admin_password
-              displayName: argocd display admin password
+              name: grafana_create_configmap
+              displayName: grafana create custom configMap
               condition: succeeded()
               inputs:
                 targetType: inline
