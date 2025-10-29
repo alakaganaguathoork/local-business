@@ -30,9 +30,7 @@ As of this date a personal subscrition to RapidAPI's "Local Business Data API" h
 
 ## Demo
 
-<!-- [![demo](https://img.youtube.com/vi/3v7dnEryvEI/0.jpg)](https://www.youtube.com/watch?v=3v7dnEryvEI) -->
-
-<iframe width="560" height="315" src="https://www.youtube.com/embed/3v7dnEryvEI?si=JutrJ4X-51Wul9zK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+[![demo](images/2025-10-27_19-22.png)](images/eks.mp4)
 
 ## Notes
 
