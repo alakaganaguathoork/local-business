@@ -63,5 +63,3 @@ As of this date a personal subscrition to RapidAPI's "Local Business Data API" h
 ### Alerting to Telegram bot (only from local setup via **Docker Compose**)
 
 ![alertmanager telegram](images/2025-10-28_23-03.png "Alertmanager Telegram")
-
-
