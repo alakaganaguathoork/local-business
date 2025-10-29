@@ -36,9 +36,7 @@ As of this date a personal subscrition to RapidAPI's "Local Business Data API" h
 
 ## Examples
 
-https://github.com/alakaganaguathoork/local-business/blob/d76a1ad185dba3f4222ab4baae6f3a586650f131/images/eks.mp4
-
-[![demo]()](images/eks.mp4)
+[eks.webm](https://github.com/user-attachments/assets/de557b22-a861-48fb-b69d-c6ff2f4c4e39)
 
 ### TLS self-signed certificate verification
 
@@ -65,3 +63,5 @@ https://github.com/alakaganaguathoork/local-business/blob/d76a1ad185dba3f4222ab4
 ### Alerting to Telegram bot (only from local setup via **Docker Compose**)
 
 ![alertmanager telegram](images/2025-10-28_23-03.png "Alertmanager Telegram")
+
+
