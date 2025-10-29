@@ -28,10 +28,6 @@ As of this date a personal subscrition to RapidAPI's "Local Business Data API" h
 
 ![architecture](docs/architecture.png "Architecture")
 
-## Demo
-
-[![demo](images/2025-10-27_19-22.png)](images/eks.mp4)
-
 ## Notes
 
 - The RapidAPI key is stored in .env file for local development and as a Kubernetes secret for production deployments.
@@ -39,6 +35,10 @@ As of this date a personal subscrition to RapidAPI's "Local Business Data API" h
 - A shared Load Balancer with TLS termination is configured to route based on local hostnames. So, in order to make it work locally, you need to add the following entries to your `/etc/hosts` file with provisioned node IPs (also, `dnsmasq` can be used locally).
 
 ## Examples
+
+https://github.com/alakaganaguathoork/local-business/blob/d76a1ad185dba3f4222ab4baae6f3a586650f131/images/eks.mp4
+
+[![demo]()](images/eks.mp4)
 
 ### TLS self-signed certificate verification
 
