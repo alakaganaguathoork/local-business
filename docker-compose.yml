@@ -16,6 +16,15 @@ services:
        required: true
     ports: 
       - "5400:5400"
+  
+  database:
+    image: mysql
+    container_name: db-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - 3306:3306
 
   prometheus:
     image: prom/prometheus:latest
