@@ -1,3 +1,6 @@
+volumes:
+  alloy_data:
+
 services:
   app:
     image: alakaganaguathoork/local-business:latest
@@ -86,3 +89,22 @@ services:
     restart: unless-stopped
     ports:
       - "3100:3100"
+  
+  alloy:
+    image: grafana/alloy:latest
+    container_name: alloy
+    hostname: halloy
+    restart: unless-stopped
+    ports:
+      - 12345:12345
+    volumes:
+      - //var/run/docker.sock://var/run/docker.sock:ro
+      - ./monitoring/alloy/config/config.alloy:/etc/alloy/config.alloy
+      - alloy_data:/var/lib/alloy/data
+    command: >
+      run
+      --server.http.listen-addr=0.0.0.0:12345
+      --storage.path=/var/lib/alloy/data
+      /etc/alloy
+    labels:
+    - "alloy.logs.enable=true"

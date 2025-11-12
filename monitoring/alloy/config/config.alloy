@@ -1,0 +1,50 @@
+// logging {
+  // level  = "info"
+  // format = "logfmt"
+// }
+// 
+// local.file_match "local_files" {
+  // path_targets = [{"__path__" = "/var/log/*.log"}]
+  // sync_period = "5s"
+// }
+// 
+// loki.source.file "log_scrape" {
+  // targets    = local.file_match.local_files.targets
+  // forward_to = [loki.process.filter_logs.receiver]
+  // tail_from_end = true
+// }
+// 
+// loki.process "filter_logs" {
+  // stage.drop {
+    // source = ""
+    // expression  = ".*Connection closed by authenticating user root"
+    // drop_counter_reason = "noisy"
+  // }
+  // forward_to = [loki.write.grafana_loki.receiver]
+// }
+// 
+// loki.write "grafana_loki" {
+  // endpoint {
+    // url = "http://localhost:3100/loki/api/v1/push"
+  // }
+// }
+
+prometheus.exporter.unix "localhost" {
+    // This component exposes a lot of metrics by default, so we will keep all of the default arguments.
+}
+
+prometheus.scrape "default" {
+    // Setting the scrape interval lower to make it faster to be able to see the metrics
+    scrape_interval = "10s"
+
+    targets    = prometheus.exporter.unix.localhost.targets
+    forward_to = [
+        prometheus.remote_write.local_prom.receiver,
+    ]
+}
+
+prometheus.remote_write "local_prom" {
+    endpoint {
+        url = "http://localhost:9090/api/v1/write"
+    }
+}
