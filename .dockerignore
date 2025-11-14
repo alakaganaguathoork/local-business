@@ -6,6 +6,7 @@ README.md
 app/.env
 
 .docker/
+docker/
 .vscode/
 azure-pipelines/
 docs/

@@ -1,14 +1,14 @@
 # root files
 .env
 .vscode/
-.vscode/**
 .docker/
-.docker/**
+docker/
 *.zip
 
 # app/ directories
 app/**/__pycache__/
 app/logs/
+app/log/
 app/**/.venv*/
 app/.env
 

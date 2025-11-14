@@ -9,9 +9,15 @@ prune: true
 datasources:
   - name: Loki
     type: loki
+    orgId: 1
+    isDefault: true
     access: proxy
     url: http://loki:3100
     jsonData:
       timeout: 60
       maxLines: 1000
+      httpHeaderName1: "X-Scope-OrgID"
+    secureJsonData:
+      httpHeaderValue1: "1"
+    basicAuth: false
     editable: true

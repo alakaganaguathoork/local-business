@@ -3,20 +3,20 @@ import http from 'k6/http';
 import { sleep } from 'k6';
 
 export const options = {
-    vus: 100,
-    duration: '100s'
+    vus: 1,
+    duration: '10s'
 };
 
 export default function () {
-    let url = 'http://app.mishap.local';
-    // let port = '5400'
-    let search_path = '/rapid_api_search'
-    let root_path = '/'
-    let test_path = '/test'
-    let paths = [search_path, root_path, test_path]
+    let env = 'local'
+    let url = {
+        local: 'http://localhost:5400',
+        cloud: 'http://app.mishap.local'
+    }
+    let search_paths = ['/business/rapid_api_search', '/news/everything?q=Ukraine']
     
-    for (let path of paths) {
-        http.get(url + path);
+    for (let path of search_paths) {
+        http.get(url[env] + path);
         console.log(url + path)
         sleep(0.3)
     }

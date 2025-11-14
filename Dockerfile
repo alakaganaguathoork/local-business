@@ -22,4 +22,4 @@ RUN python3 -m venv venv \
 
 EXPOSE 5400
 
-ENTRYPOINT ["venv/bin/python", "app.py"]
+ENTRYPOINT ["venv/bin/python", "main.py"]

@@ -1,50 +1,53 @@
-// logging {
-  // level  = "info"
-  // format = "logfmt"
-// }
-// 
-// local.file_match "local_files" {
-  // path_targets = [{"__path__" = "/var/log/*.log"}]
-  // sync_period = "5s"
-// }
-// 
-// loki.source.file "log_scrape" {
-  // targets    = local.file_match.local_files.targets
-  // forward_to = [loki.process.filter_logs.receiver]
-  // tail_from_end = true
-// }
-// 
-// loki.process "filter_logs" {
-  // stage.drop {
-    // source = ""
-    // expression  = ".*Connection closed by authenticating user root"
-    // drop_counter_reason = "noisy"
-  // }
-  // forward_to = [loki.write.grafana_loki.receiver]
-// }
-// 
-// loki.write "grafana_loki" {
-  // endpoint {
-    // url = "http://localhost:3100/loki/api/v1/push"
-  // }
-// }
-
-prometheus.exporter.unix "localhost" {
-    // This component exposes a lot of metrics by default, so we will keep all of the default arguments.
+// Discover containers from the local docker engine
+discovery.docker "local" {
+  host             = "unix:///var/run/docker.sock"
+  refresh_interval = "10s"
 }
 
-prometheus.scrape "default" {
-    // Setting the scrape interval lower to make it faster to be able to see the metrics
-    scrape_interval = "10s"
-
-    targets    = prometheus.exporter.unix.localhost.targets
-    forward_to = [
-        prometheus.remote_write.local_prom.receiver,
-    ]
+local.file_match "app_logs" {
+  path_targets = [
+    {"__path__" = "/logs/app/*.log"},
+  ]
+  sync_period = "5s"
 }
 
-prometheus.remote_write "local_prom" {
-    endpoint {
-        url = "http://localhost:9090/api/v1/write"
-    }
+// Filter by label rules
+discovery.relabel "app" {
+  targets = discovery.docker.local.targets
+
+  // Option A: match by Docker container name label
+  // rule {
+    // source_labels = ["__meta_docker_container_name"]
+    // regex         = ".*/app$"    # docker exposes names like "/app"
+    // action        = "keep"
+  // }
+
+  // Option B (Compose): match by service name label
+  rule {
+    source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+    regex         = "app"
+    action        = "keep"
+  }
+
+  // Additional rule for app logs
+  rule {
+    source_labels = ["__meta_docker_container_id"]
+    regex         = "(.*)"
+    target_label  = "__path__"
+    replacement   = "/app/*.log"
+    action        = "replace"
+  }
+}
+
+// Read stdout/stderr of discovered containers via Docker API
+loki.source.docker "containers" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.relabel.app.output
+  forward_to = [loki.write.grafana_loki.receiver]
+}
+
+loki.write "grafana_loki" {
+  endpoint {
+    url = "http://loki:3100/loki/api/v1/push"
+  }
 }

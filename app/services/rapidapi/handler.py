@@ -1,29 +1,28 @@
 import json
-import os
 from random import choice
 from flask import (
-    Flask,
+    Blueprint,
     jsonify,
     redirect,
     Response
 )
 from logger.app_logger import AppLogger
 from monitor.prometheus_monitoring import PrometheusMonitoring
-from rapidapi import RadipApi
+from .rapidapi import RadipApi
 
-APP_ENV = "local"
-app = Flask(__name__)
+
+blueprint = Blueprint('business', __name__, url_prefix='/business')
 logger = AppLogger()
 metrics = PrometheusMonitoring()
 
 
-@app.route("/")
+@blueprint.route("/")
 @metrics.request_total
 def root_path():
     return redirect("/rapid_api_search", code=302)
 
 
-@app.route("/test")
+@blueprint.route("/test")
 @logger.log
 @metrics.request_total
 def test_path():
@@ -38,7 +37,7 @@ def test_path():
                 {'Content-Type': 'text/plain'})
 
 
-@app.route("/rapid_api_search")
+@blueprint.route("/rapid_api_search")
 @logger.log
 @metrics.request_latency_seconds
 def rapid_api_search_path():
@@ -47,23 +46,14 @@ def rapid_api_search_path():
                     status=200,
                     content_type="application/json")
 
-
-@app.route("/metrics")
+@blueprint.route("/metrics")
 @logger.log
 def metrics_path():
     return metrics.return_metrics()
 
-@app.route("/health")
+@blueprint.route("/health")
 @logger.log
 @metrics.request_latency_seconds
 def health():
     body = json.dumps({"status": "ok", "message": "Up & running"})
     return Response(response=body, status=200, mimetype="application/json")
-
-def run(enable_debug):
-    APP_ENV = os.getenv("APP_ENV")
-    HOST = "0.0.0.0"
-    PORT=5400
-    if APP_ENV == "local":
-        print(f"+ + + Current environment is {APP_ENV} + + +")
-    app.run(HOST, PORT, enable_debug)
